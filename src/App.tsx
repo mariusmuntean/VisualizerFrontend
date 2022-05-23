@@ -1,45 +1,25 @@
-import { useState } from 'react'
-import logo from './logo.svg'
+import { Tabs } from 'antd'
+
 import './App.css'
+import 'antd/dist/antd.css'
+import { Hashtags } from './components/hashtags'
+
+const { TabPane } = Tabs
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  )
+    return (
+        <Tabs defaultActiveKey="1" centered>
+            <TabPane tab="Hashtags" key="1">
+                <Hashtags />
+            </TabPane>
+            <TabPane tab="Tab 2" key="2">
+                Content of Tab Pane 2
+            </TabPane>
+            <TabPane tab="Tab 3" key="3">
+                Content of Tab Pane 3
+            </TabPane>
+        </Tabs>
+    )
 }
 
 export default App
