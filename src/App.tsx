@@ -2,15 +2,15 @@ import { Tabs } from 'antd'
 
 import './App.css'
 import 'antd/dist/antd.css'
-import { Hashtags } from './components/hashtags'
+import { HashtagsLive } from './components/hashtags'
 
 const { TabPane } = Tabs
 
 function App() {
     return (
-        <Tabs defaultActiveKey="1" centered>
+        <Tabs defaultActiveKey="1" centered destroyInactiveTabPane={true}>
             <TabPane tab="Hashtags" key="1">
-                <Hashtags />
+                <HashtagsLive />
             </TabPane>
             <TabPane tab="Tab 2" key="2">
                 Content of Tab Pane 2

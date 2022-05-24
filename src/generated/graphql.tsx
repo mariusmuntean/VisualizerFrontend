@@ -55,6 +55,11 @@ export type HashtagQueryTopHashtagsArgs = {
   amount?: InputMaybe<Scalars['Int']>;
 };
 
+export type HashtagSubscription = {
+  __typename?: 'HashtagSubscription';
+  hashtagAdded?: Maybe<HashtagTypeQl>;
+};
+
 export type HashtagTypeQl = {
   __typename?: 'HashtagTypeQl';
   name?: Maybe<Scalars['String']>;
@@ -73,6 +78,11 @@ export type GetHashtagsQueryVariables = Exact<{
 
 
 export type GetHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'HashtagQuery', topHashtags?: Array<{ __typename?: 'HashtagTypeQl', score?: any | null, name?: string | null } | null> | null } | null };
+
+export type HastagAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HastagAddedSubscription = { __typename?: 'HashtagSubscription', hashtagAdded?: { __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -113,3 +123,33 @@ export function useGetHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetHashtagsQueryHookResult = ReturnType<typeof useGetHashtagsQuery>;
 export type GetHashtagsLazyQueryHookResult = ReturnType<typeof useGetHashtagsLazyQuery>;
 export type GetHashtagsQueryResult = Apollo.QueryResult<GetHashtagsQuery, GetHashtagsQueryVariables>;
+export const HastagAddedDocument = gql`
+    subscription hastagAdded {
+  hashtagAdded {
+    name
+    score
+  }
+}
+    `;
+
+/**
+ * __useHastagAddedSubscription__
+ *
+ * To run a query within a React component, call `useHastagAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useHastagAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHastagAddedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHastagAddedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<HastagAddedSubscription, HastagAddedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<HastagAddedSubscription, HastagAddedSubscriptionVariables>(HastagAddedDocument, options);
+      }
+export type HastagAddedSubscriptionHookResult = ReturnType<typeof useHastagAddedSubscription>;
+export type HastagAddedSubscriptionResult = Apollo.SubscriptionResult<HastagAddedSubscription>;

@@ -1,1 +1,2 @@
-export { Hashtags } from "./hashtags";
+export { Hashtags } from './hashtags'
+export { HashtagsLive } from './hashtags-live'
