@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
 import { useSubscription } from '@apollo/client'
-import { Spin } from 'antd'
+import { Button, Col, Row, Spin } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
+import Column from 'antd/lib/table/Column'
 import ReactWordcloud, { OptionsProp } from 'react-wordcloud'
 
 import { useGetHashtagsQuery, useHastagAddedSubscription, VisualizerQuery } from '../../generated/graphql'
 import { HashtagSubscription } from './subscriptions'
+import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 
 interface Word {
     text: string
@@ -12,12 +15,12 @@ interface Word {
 }
 
 export const HashtagsLive = () => {
-    const x = useSubscription(HashtagSubscription)
-    console.log(x)
-
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 120 } })
     const { loading: loadingHashtagAdded, data: hashtagAddedData } = useHastagAddedSubscription()
-    console.log(hashtagAddedData)
+
+    // ToDo: add buttons to start and stop streamming
+    // ToDo: show ranked list of hashtag names and scores
+    // ToDo: throttle the updates somehow. The wordcloud is to active.
 
     const wordCloudData = useMemo(() => {
         if (loadingHashtags || loadingHashtagAdded) {
@@ -68,5 +71,27 @@ export const HashtagsLive = () => {
     }
     const size: [number, number] = [900, 600]
 
-    return <ReactWordcloud words={wordCloudData} options={options} />
+    return (
+        <>
+            <Row>
+                <Col span={6}></Col>
+                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming}>
+                        Start Streaming
+                    </Button>
+                </Col>
+                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Button type="primary" icon={<DownloadOutlined />} size={'large'} onClick={stopStreaming}>
+                        Stop Streaming
+                    </Button>
+                </Col>
+                <Col span={6}></Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    <ReactWordcloud words={wordCloudData} options={options} />
+                </Col>
+            </Row>
+        </>
+    )
 }
