@@ -3,7 +3,7 @@ import { useSubscription } from '@apollo/client'
 import { Button, Col, Row, Spin, Table } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
 import Column from 'antd/lib/table/Column'
-import ReactWordcloud, { OptionsProp } from 'react-wordcloud'
+import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
 import { useGetHashtagsQuery, useHastagAddedSubscription, VisualizerQuery } from '../../generated/graphql'
 import { HashtagSubscription } from './subscriptions'
@@ -71,19 +71,21 @@ export const HashtagsLive = () => {
     const options: OptionsProp = {
         colors: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b'],
         enableTooltip: true,
-        deterministic: false,
+        deterministic: true,
+        randomSeed: 'dgfwrhrh',
         fontFamily: 'impact',
-        fontSizes: [5, 60],
+        fontSizes: [12, 60],
         fontStyle: 'normal',
         fontWeight: 'normal',
         padding: 1,
-        rotations: 3,
+        rotations: 1,
         rotationAngles: [0, 90],
-        scale: 'sqrt',
+        scale: 'log',
         spiral: 'archimedean',
-        transitionDuration: 1000,
+        transitionDuration: 500,
+        enableOptimizations: true,
     }
-    const size: [number, number] = [900, 600]
+    const size: [number, number] = [1000, 700]
 
     const columns: ColumnType<Word>[] = [
         {
@@ -95,6 +97,10 @@ export const HashtagsLive = () => {
             render: (val, record) => record.value,
         },
     ]
+
+    const wordcloudCallbacks: CallbacksProp = {
+        getWordTooltip: (w: Word) => `hashtag appears ${w.value} time(s)`,
+    }
 
     return (
         <>
@@ -125,7 +131,7 @@ export const HashtagsLive = () => {
                     ></Table>
                 </Col>
                 <Col span={20}>
-                    <ReactWordcloud words={wordCloudData} options={options} />
+                    <ReactWordcloud words={wordCloudData} options={options} callbacks={wordcloudCallbacks} />
                 </Col>
             </Row>
         </>
