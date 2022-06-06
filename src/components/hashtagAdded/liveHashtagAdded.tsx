@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button, Col, Row, Spin, Table } from 'antd'
-import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
+import { Col, Row, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
 import { useGetHashtagsQuery, useHastagAddedSubscription } from '../../generated/graphql'
-import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 import { ColumnType } from 'antd/lib/table'
-import { useIsStreaming } from '../hooks/useIsStreamingHook'
 
 interface Word {
     text: string
@@ -14,9 +11,9 @@ interface Word {
 }
 
 export const LiveHashtagAdded = () => {
-    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
+    const [topHashtagAmount, setTopHashtagAmount] = useState(50)
+    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
     const { loading: loadingHashtagAdded, data: hashtagAddedData } = useHastagAddedSubscription()
-    const isStreaming = useIsStreaming()
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
@@ -74,7 +71,7 @@ export const LiveHashtagAdded = () => {
         deterministic: true,
         randomSeed: 'dgfwrhrh',
         fontFamily: 'impact',
-        fontSizes: [12, 60],
+        fontSizes: [10, 55],
         fontStyle: 'normal',
         fontWeight: 'normal',
         padding: 1,
@@ -104,20 +101,6 @@ export const LiveHashtagAdded = () => {
 
     return (
         <>
-            <Row>
-                <Col span={6}></Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming} disabled={isStreaming === true}>
-                        Start Streaming
-                    </Button>
-                </Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming} disabled={isStreaming === false}>
-                        Stop Streaming
-                    </Button>
-                </Col>
-                <Col span={6}></Col>
-            </Row>
             <Row>
                 <Col span={4}>
                     <Table

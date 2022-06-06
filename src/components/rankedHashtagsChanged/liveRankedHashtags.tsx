@@ -1,24 +1,19 @@
-import { useEffect, useState } from 'react'
-import { Button, Col, Row, Spin, Table } from 'antd'
-import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
-import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
+import { useCallback, useEffect, useState } from 'react'
+import { Button, Col, Input, Row, Space, Spin, Table } from 'antd'
+import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
+import { debounce, toNumber } from 'lodash'
 
 import { useGetHashtagsQuery, useRankedHashtagsChangedSubscription } from '../../generated/graphql'
-import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 import { ColumnType } from 'antd/lib/table'
-import { useIsStreaming } from '../hooks/useIsStreamingHook'
-
-interface Word {
-    text: string
-    value: number
-}
 
 export const LiveRankedHashtags = () => {
-    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
-    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useRankedHashtagsChangedSubscription({ variables: { amount: 50 } })
-    const isStreaming = useIsStreaming()
+    const [topHashtagAmount, setTopHashtagAmount] = useState<number>(50)
+    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
+    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useRankedHashtagsChangedSubscription({ variables: { amount: topHashtagAmount } })
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
+
+    const setTopHashtagAmountDebounced = useCallback(debounce(setTopHashtagAmount, 400), [setTopHashtagAmount])
 
     // ToDo: add buttons to start and stop streamming
     // ToDo: show ranked list of hashtag names and scores
@@ -63,7 +58,7 @@ export const LiveRankedHashtags = () => {
         deterministic: true,
         randomSeed: 'dgfwrhrh',
         fontFamily: 'impact',
-        fontSizes: [12, 60],
+        fontSizes: [10, 55],
         fontStyle: 'normal',
         fontWeight: 'normal',
         padding: 1,
@@ -93,21 +88,22 @@ export const LiveRankedHashtags = () => {
 
     return (
         <>
-            <Row>
-                <Col span={6}></Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming} disabled={isStreaming === true}>
-                        Start Streaming
-                    </Button>
+            <Row justify="center" align="middle">
+                <Col span={24}>
+                    <div style={{ margin: '1em', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                        <Space direction="vertical">
+                            <Input
+                                autoFocus
+                                addonBefore="Top"
+                                addonAfter="hashtags"
+                                defaultValue={topHashtagAmount}
+                                onChange={(e) => setTopHashtagAmountDebounced(toNumber(e.target.value))}
+                            />
+                        </Space>
+                    </div>
                 </Col>
-                <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming} disabled={isStreaming === false}>
-                        Stop Streaming
-                    </Button>
-                </Col>
-                <Col span={6}></Col>
             </Row>
-            <Row justify="center" align="top">
+            <Row justify="center" align="middle">
                 <Col span={4}>
                     <Table
                         dataSource={[
@@ -120,7 +116,7 @@ export const LiveRankedHashtags = () => {
                     ></Table>
                 </Col>
                 <Col span={20} style={{ padding: '2em' }}>
-                    <ReactWordcloud words={wordCloudData} options={options} callbacks={wordcloudCallbacks} />
+                    <ReactWordcloud words={wordCloudData} options={options} callbacks={wordcloudCallbacks} maxWords={300} />
                 </Col>
             </Row>
         </>
