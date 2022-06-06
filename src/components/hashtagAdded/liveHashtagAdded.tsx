@@ -15,8 +15,8 @@ interface Word {
     value: number
 }
 
-export const HashtagsLive = () => {
-    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 120 } })
+export const LiveHashtagAdded = () => {
+    const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
     const { loading: loadingHashtagAdded, data: hashtagAddedData } = useHastagAddedSubscription()
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
@@ -60,7 +60,7 @@ export const HashtagsLive = () => {
             currentWord.value = newHashtag.score
             words[newHashtagIndex] = currentWord
         }
-        console.log(words[0])
+
         setWordCloudData([...words])
     }, [hashtagAddedData?.hashtagAdded?.name, hashtagAddedData?.hashtagAdded?.score])
 

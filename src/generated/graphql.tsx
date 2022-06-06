@@ -58,6 +58,12 @@ export type HashtagQueryTopHashtagsArgs = {
 export type HashtagSubscription = {
   __typename?: 'HashtagSubscription';
   hashtagAdded?: Maybe<HashtagTypeQl>;
+  rankedHashtagsChanged?: Maybe<Array<Maybe<HashtagTypeQl>>>;
+};
+
+
+export type HashtagSubscriptionRankedHashtagsChangedArgs = {
+  amount?: InputMaybe<Scalars['Int']>;
 };
 
 export type HashtagTypeQl = {
@@ -83,6 +89,13 @@ export type HastagAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type HastagAddedSubscription = { __typename?: 'HashtagSubscription', hashtagAdded?: { __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null };
+
+export type RankedHashtagsChangedSubscriptionVariables = Exact<{
+  amount?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type RankedHashtagsChangedSubscription = { __typename?: 'HashtagSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -153,3 +166,34 @@ export function useHastagAddedSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type HastagAddedSubscriptionHookResult = ReturnType<typeof useHastagAddedSubscription>;
 export type HastagAddedSubscriptionResult = Apollo.SubscriptionResult<HastagAddedSubscription>;
+export const RankedHashtagsChangedDocument = gql`
+    subscription rankedHashtagsChanged($amount: Int) {
+  rankedHashtagsChanged(amount: $amount) {
+    name
+    score
+  }
+}
+    `;
+
+/**
+ * __useRankedHashtagsChangedSubscription__
+ *
+ * To run a query within a React component, call `useRankedHashtagsChangedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRankedHashtagsChangedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRankedHashtagsChangedSubscription({
+ *   variables: {
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<RankedHashtagsChangedSubscription, RankedHashtagsChangedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<RankedHashtagsChangedSubscription, RankedHashtagsChangedSubscriptionVariables>(RankedHashtagsChangedDocument, options);
+      }
+export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
+export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
