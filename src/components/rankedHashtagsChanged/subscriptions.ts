@@ -8,3 +8,11 @@ export const RankedHashtagsChanged = gql`
         }
     }
 `
+
+export const IsStreamingChanged = gql`
+    subscription isStreamingSub {
+        isStreamingChanged {
+            isStreaming
+        }
+    }
+`

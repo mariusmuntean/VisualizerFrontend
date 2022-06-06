@@ -4,7 +4,7 @@ import { Button, Col, Row, Spin, Table } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
-import { useGetHashtagsQuery, useHastagAddedSubscription, useRankedHashtagsChangedSubscription, VisualizerQuery } from '../../generated/graphql'
+import { useGetHashtagsQuery, useHastagAddedSubscription, useRankedHashtagsChangedSubscription, useIsStreamingQuery, useIsStreamingSubSubscription } from '../../generated/graphql'
 import { HashtagSubscription } from './subscriptions'
 import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 import { ColumnType } from 'antd/lib/table'
@@ -17,6 +17,20 @@ interface Word {
 export const LiveRankedHashtags = () => {
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
     const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useRankedHashtagsChangedSubscription({ variables: { amount: 50 } })
+    const { loading: loadingIsStreaming, data: isStreamingData } = useIsStreamingQuery()
+    const { loading: loadingIsStreamingChanged, data: isStreamingChanged } = useIsStreamingSubSubscription()
+    const isStreaming = useMemo<boolean | undefined>(() => {
+        if (loadingIsStreaming) {
+            return undefined
+        }
+
+        if (!loadingIsStreamingChanged) {
+            return isStreamingChanged?.isStreamingChanged?.isStreaming ?? undefined
+        }
+
+        return isStreamingData?.streaming?.isStreaming ?? undefined
+    }, [loadingIsStreaming, loadingIsStreamingChanged, isStreamingChanged?.isStreamingChanged?.isStreaming, isStreamingData?.streaming?.isStreaming])
+
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
     // ToDo: add buttons to start and stop streamming
@@ -95,12 +109,12 @@ export const LiveRankedHashtags = () => {
             <Row>
                 <Col span={6}></Col>
                 <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming}>
+                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming} disabled={isStreaming === true}>
                         Start Streaming
                     </Button>
                 </Col>
                 <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming}>
+                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming} disabled={isStreaming === false}>
                         Stop Streaming
                     </Button>
                 </Col>

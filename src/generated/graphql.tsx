@@ -55,27 +55,54 @@ export type HashtagQueryTopHashtagsArgs = {
   amount?: InputMaybe<Scalars['Int']>;
 };
 
-export type HashtagSubscription = {
-  __typename?: 'HashtagSubscription';
-  hashtagAdded?: Maybe<HashtagTypeQl>;
-  rankedHashtagsChanged?: Maybe<Array<Maybe<HashtagTypeQl>>>;
-};
-
-
-export type HashtagSubscriptionRankedHashtagsChangedArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
-};
-
 export type HashtagTypeQl = {
   __typename?: 'HashtagTypeQl';
   name?: Maybe<Scalars['String']>;
   score?: Maybe<Scalars['Decimal']>;
 };
 
+export type IsStreamingStateTypeQl = {
+  __typename?: 'IsStreamingStateTypeQl';
+  isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type StreamingMutations = {
+  __typename?: 'StreamingMutations';
+  /** Start ingesting the live Twitter feed */
+  startStreaming?: Maybe<Scalars['Boolean']>;
+  /** Stop ingesting the live Twitter feed */
+  stopStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type StreamingQuery = {
+  __typename?: 'StreamingQuery';
+  /** Whether or not the live ingestion is running. */
+  isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type VisualizerMutation = {
+  __typename?: 'VisualizerMutation';
+  streaming?: Maybe<StreamingMutations>;
+};
+
 export type VisualizerQuery = {
   __typename?: 'VisualizerQuery';
   graphResult?: Maybe<GraphResultQuery>;
   hashtag?: Maybe<HashtagQuery>;
+  streaming?: Maybe<StreamingQuery>;
+};
+
+export type VisualizerSubscription = {
+  __typename?: 'VisualizerSubscription';
+  hashtagAdded?: Maybe<HashtagTypeQl>;
+  /** Produces updates whenever the live ingestion has changed */
+  isStreamingChanged?: Maybe<IsStreamingStateTypeQl>;
+  rankedHashtagsChanged?: Maybe<Array<Maybe<HashtagTypeQl>>>;
+};
+
+
+export type VisualizerSubscriptionRankedHashtagsChangedArgs = {
+  amount?: InputMaybe<Scalars['Int']>;
 };
 
 export type GetHashtagsQueryVariables = Exact<{
@@ -88,14 +115,24 @@ export type GetHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __t
 export type HastagAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HastagAddedSubscription = { __typename?: 'HashtagSubscription', hashtagAdded?: { __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null };
+export type HastagAddedSubscription = { __typename?: 'VisualizerSubscription', hashtagAdded?: { __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null };
+
+export type IsStreamingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsStreamingQuery = { __typename?: 'VisualizerQuery', streaming?: { __typename?: 'StreamingQuery', isStreaming?: boolean | null } | null };
 
 export type RankedHashtagsChangedSubscriptionVariables = Exact<{
   amount?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type RankedHashtagsChangedSubscription = { __typename?: 'HashtagSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
+export type RankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
+
+export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'IsStreamingStateTypeQl', isStreaming?: boolean | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -166,6 +203,40 @@ export function useHastagAddedSubscription(baseOptions?: Apollo.SubscriptionHook
       }
 export type HastagAddedSubscriptionHookResult = ReturnType<typeof useHastagAddedSubscription>;
 export type HastagAddedSubscriptionResult = Apollo.SubscriptionResult<HastagAddedSubscription>;
+export const IsStreamingDocument = gql`
+    query isStreaming {
+  streaming {
+    isStreaming
+  }
+}
+    `;
+
+/**
+ * __useIsStreamingQuery__
+ *
+ * To run a query within a React component, call `useIsStreamingQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsStreamingQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsStreamingQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsStreamingQuery(baseOptions?: Apollo.QueryHookOptions<IsStreamingQuery, IsStreamingQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options);
+      }
+export function useIsStreamingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsStreamingQuery, IsStreamingQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options);
+        }
+export type IsStreamingQueryHookResult = ReturnType<typeof useIsStreamingQuery>;
+export type IsStreamingLazyQueryHookResult = ReturnType<typeof useIsStreamingLazyQuery>;
+export type IsStreamingQueryResult = Apollo.QueryResult<IsStreamingQuery, IsStreamingQueryVariables>;
 export const RankedHashtagsChangedDocument = gql`
     subscription rankedHashtagsChanged($amount: Int) {
   rankedHashtagsChanged(amount: $amount) {
@@ -197,3 +268,32 @@ export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.Subscr
       }
 export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
 export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
+export const IsStreamingSubDocument = gql`
+    subscription isStreamingSub {
+  isStreamingChanged {
+    isStreaming
+  }
+}
+    `;
+
+/**
+ * __useIsStreamingSubSubscription__
+ *
+ * To run a query within a React component, call `useIsStreamingSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useIsStreamingSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsStreamingSubSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>(IsStreamingSubDocument, options);
+      }
+export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
+export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;
