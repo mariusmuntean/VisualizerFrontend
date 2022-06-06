@@ -10,11 +10,3 @@ export const GetHashtags = gql`
         }
     }
 `
-
-export const IsStreaming = gql`
-    query isStreaming {
-        streaming {
-            isStreaming
-        }
-    }
-`

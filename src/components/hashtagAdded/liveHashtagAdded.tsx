@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useSubscription } from '@apollo/client'
+import { useEffect, useState } from 'react'
 import { Button, Col, Row, Spin, Table } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
-import Column from 'antd/lib/table/Column'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
-import { useGetHashtagsQuery, useHastagAddedSubscription, VisualizerQuery } from '../../generated/graphql'
-import { HashtagSubscription } from './subscriptions'
+import { useGetHashtagsQuery, useHastagAddedSubscription } from '../../generated/graphql'
 import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 import { ColumnType } from 'antd/lib/table'
+import { useIsStreaming } from '../hooks/useIsStreamingHook'
 
 interface Word {
     text: string
@@ -18,6 +16,8 @@ interface Word {
 export const LiveHashtagAdded = () => {
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
     const { loading: loadingHashtagAdded, data: hashtagAddedData } = useHastagAddedSubscription()
+    const isStreaming = useIsStreaming()
+
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
     // ToDo: add buttons to start and stop streamming
@@ -107,12 +107,12 @@ export const LiveHashtagAdded = () => {
             <Row>
                 <Col span={6}></Col>
                 <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming}>
+                    <Button type="primary" danger icon={<DownloadOutlined />} size={'large'} onClick={startStreaming} disabled={isStreaming === true}>
                         Start Streaming
                     </Button>
                 </Col>
                 <Col span={6} style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming}>
+                    <Button type="primary" icon={<StopOutlined />} size={'large'} onClick={stopStreaming} disabled={isStreaming === false}>
                         Stop Streaming
                     </Button>
                 </Col>

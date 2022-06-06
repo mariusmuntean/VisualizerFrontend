@@ -122,17 +122,17 @@ export type IsStreamingQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type IsStreamingQuery = { __typename?: 'VisualizerQuery', streaming?: { __typename?: 'StreamingQuery', isStreaming?: boolean | null } | null };
 
+export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'IsStreamingStateTypeQl', isStreaming?: boolean | null } | null };
+
 export type RankedHashtagsChangedSubscriptionVariables = Exact<{
   amount?: InputMaybe<Scalars['Int']>;
 }>;
 
 
 export type RankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
-
-export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'IsStreamingStateTypeQl', isStreaming?: boolean | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -237,6 +237,35 @@ export function useIsStreamingLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type IsStreamingQueryHookResult = ReturnType<typeof useIsStreamingQuery>;
 export type IsStreamingLazyQueryHookResult = ReturnType<typeof useIsStreamingLazyQuery>;
 export type IsStreamingQueryResult = Apollo.QueryResult<IsStreamingQuery, IsStreamingQueryVariables>;
+export const IsStreamingSubDocument = gql`
+    subscription isStreamingSub {
+  isStreamingChanged {
+    isStreaming
+  }
+}
+    `;
+
+/**
+ * __useIsStreamingSubSubscription__
+ *
+ * To run a query within a React component, call `useIsStreamingSubSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useIsStreamingSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsStreamingSubSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>(IsStreamingSubDocument, options);
+      }
+export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
+export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;
 export const RankedHashtagsChangedDocument = gql`
     subscription rankedHashtagsChanged($amount: Int) {
   rankedHashtagsChanged(amount: $amount) {
@@ -268,32 +297,3 @@ export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.Subscr
       }
 export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
 export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
-export const IsStreamingSubDocument = gql`
-    subscription isStreamingSub {
-  isStreamingChanged {
-    isStreaming
-  }
-}
-    `;
-
-/**
- * __useIsStreamingSubSubscription__
- *
- * To run a query within a React component, call `useIsStreamingSubSubscription` and pass it any options that fit your needs.
- * When your component renders, `useIsStreamingSubSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useIsStreamingSubSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>(IsStreamingSubDocument, options);
-      }
-export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
-export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;

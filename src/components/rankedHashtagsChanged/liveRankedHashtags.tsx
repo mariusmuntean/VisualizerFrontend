@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useSubscription } from '@apollo/client'
+import { useEffect, useState } from 'react'
 import { Button, Col, Row, Spin, Table } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
-import { useGetHashtagsQuery, useHastagAddedSubscription, useRankedHashtagsChangedSubscription, useIsStreamingQuery, useIsStreamingSubSubscription } from '../../generated/graphql'
-import { HashtagSubscription } from './subscriptions'
+import { useGetHashtagsQuery, useRankedHashtagsChangedSubscription } from '../../generated/graphql'
 import { startStreaming, stopStreaming } from '../../infrastructure/api/testApi'
 import { ColumnType } from 'antd/lib/table'
+import { useIsStreaming } from '../hooks/useIsStreamingHook'
 
 interface Word {
     text: string
@@ -17,19 +16,7 @@ interface Word {
 export const LiveRankedHashtags = () => {
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: 50 } })
     const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useRankedHashtagsChangedSubscription({ variables: { amount: 50 } })
-    const { loading: loadingIsStreaming, data: isStreamingData } = useIsStreamingQuery()
-    const { loading: loadingIsStreamingChanged, data: isStreamingChanged } = useIsStreamingSubSubscription()
-    const isStreaming = useMemo<boolean | undefined>(() => {
-        if (loadingIsStreaming) {
-            return undefined
-        }
-
-        if (!loadingIsStreamingChanged) {
-            return isStreamingChanged?.isStreamingChanged?.isStreaming ?? undefined
-        }
-
-        return isStreamingData?.streaming?.isStreaming ?? undefined
-    }, [loadingIsStreaming, loadingIsStreamingChanged, isStreamingChanged?.isStreamingChanged?.isStreaming, isStreamingData?.streaming?.isStreaming])
+    const isStreaming = useIsStreaming()
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
