@@ -7,6 +7,7 @@ import { LiveHashtagAdded } from './components/hashtagAdded'
 import { LiveRankedHashtags } from './components/rankedHashtagsChanged/liveRankedHashtags'
 import { startStreaming, stopStreaming } from './infrastructure/api/testApi'
 import { useIsStreaming } from './components/hooks/useIsStreamingHook'
+import { Social } from './components/social/social'
 
 const { TabPane } = Tabs
 
@@ -38,8 +39,8 @@ function App() {
                         <TabPane tab="Ranked Hashtags" key="2">
                             <LiveRankedHashtags />
                         </TabPane>
-                        <TabPane tab="Tab 3" key="3">
-                            Content of Tab Pane 3
+                        <TabPane tab="Social Graph" key="3">
+                            <Social></Social>
                         </TabPane>
                     </Tabs>
                 </Col>

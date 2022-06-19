@@ -16,19 +16,6 @@ export type Scalars = {
   Decimal: any;
 };
 
-export type GraphEdgeTypeQl = {
-  __typename?: 'GraphEdgeTypeQl';
-  fromId: Scalars['String'];
-  toId: Scalars['String'];
-};
-
-export type GraphNodeTypeQl = {
-  __typename?: 'GraphNodeTypeQl';
-  id: Scalars['String'];
-  label?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-};
-
 export type GraphResultQuery = {
   __typename?: 'GraphResultQuery';
   graphResults?: Maybe<GraphResultTypeQl>;
@@ -41,8 +28,8 @@ export type GraphResultQueryGraphResultsArgs = {
 
 export type GraphResultTypeQl = {
   __typename?: 'GraphResultTypeQl';
-  edges?: Maybe<Array<Maybe<GraphEdgeTypeQl>>>;
-  nodes?: Maybe<Array<Maybe<GraphNodeTypeQl>>>;
+  edges?: Maybe<Array<Maybe<MentionRelationshipTypeQl>>>;
+  nodes?: Maybe<Array<Maybe<UserNodeTypeQl>>>;
 };
 
 export type HashtagQuery = {
@@ -66,6 +53,19 @@ export type IsStreamingStateTypeQl = {
   isStreaming?: Maybe<Scalars['Boolean']>;
 };
 
+export enum MentionRelationshipType {
+  Mentioned = 'MENTIONED',
+  WasMentionedBy = 'WAS_MENTIONED_BY'
+}
+
+export type MentionRelationshipTypeQl = {
+  __typename?: 'MentionRelationshipTypeQl';
+  fromUserId: Scalars['String'];
+  relationshipType?: Maybe<MentionRelationshipType>;
+  toUserId: Scalars['String'];
+  tweetId: Scalars['String'];
+};
+
 export type StreamingMutations = {
   __typename?: 'StreamingMutations';
   /** Start ingesting the live Twitter feed */
@@ -78,6 +78,12 @@ export type StreamingQuery = {
   __typename?: 'StreamingQuery';
   /** Whether or not the live ingestion is running. */
   isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type UserNodeTypeQl = {
+  __typename?: 'UserNodeTypeQl';
+  userId: Scalars['String'];
+  userName?: Maybe<Scalars['String']>;
 };
 
 export type VisualizerMutation = {
@@ -95,7 +101,7 @@ export type VisualizerQuery = {
 export type VisualizerSubscription = {
   __typename?: 'VisualizerSubscription';
   hashtagAdded?: Maybe<HashtagTypeQl>;
-  /** Produces updates whenever the live ingestion has changed */
+  /** Produces updates whenever the state of the live ingestion has changed */
   isStreamingChanged?: Maybe<IsStreamingStateTypeQl>;
   rankedHashtagsChanged?: Maybe<Array<Maybe<HashtagTypeQl>>>;
 };
@@ -133,6 +139,13 @@ export type RankedHashtagsChangedSubscriptionVariables = Exact<{
 
 
 export type RankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
+
+export type GetGraphResultsQueryVariables = Exact<{
+  amount: Scalars['Int'];
+}>;
+
+
+export type GetGraphResultsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', graphResults?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null } | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -297,3 +310,49 @@ export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.Subscr
       }
 export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
 export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
+export const GetGraphResultsDocument = gql`
+    query getGraphResults($amount: Int!) {
+  graphResult {
+    graphResults(amount: $amount) {
+      nodes {
+        userId
+        userName
+      }
+      edges {
+        fromUserId
+        toUserId
+        tweetId
+        relationshipType
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGraphResultsQuery__
+ *
+ * To run a query within a React component, call `useGetGraphResultsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGraphResultsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGraphResultsQuery({
+ *   variables: {
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function useGetGraphResultsQuery(baseOptions: Apollo.QueryHookOptions<GetGraphResultsQuery, GetGraphResultsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options);
+      }
+export function useGetGraphResultsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGraphResultsQuery, GetGraphResultsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options);
+        }
+export type GetGraphResultsQueryHookResult = ReturnType<typeof useGetGraphResultsQuery>;
+export type GetGraphResultsLazyQueryHookResult = ReturnType<typeof useGetGraphResultsLazyQuery>;
+export type GetGraphResultsQueryResult = Apollo.QueryResult<GetGraphResultsQuery, GetGraphResultsQueryVariables>;

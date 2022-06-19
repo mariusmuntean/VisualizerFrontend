@@ -17,7 +17,9 @@
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
         "react-wordcloud": "^1.2.7",
-        "subscriptions-transport-ws": "^0.11.0"
+        "subscriptions-transport-ws": "^0.11.0",
+        "vis-data": "^7.1.4",
+        "vis-network": "^9.1.2"
     },
     "devDependencies": {
         "@graphql-codegen/cli": "2.6.2",

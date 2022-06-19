@@ -46,6 +46,7 @@ export const LiveRankedHashtags = () => {
                 value: rh?.score,
             })) ?? []
         setWordCloudData([...newWords])
+        console.log(new Date().toTimeString())
     }, [rankedHashtagsChanged?.rankedHashtagsChanged])
 
     if (loadingHashtags) {
@@ -62,8 +63,8 @@ export const LiveRankedHashtags = () => {
         fontStyle: 'normal',
         fontWeight: 'normal',
         padding: 1,
-        rotations: 1,
-        rotationAngles: [0, 90],
+        rotations: 3,
+        rotationAngles: [-90, 90],
         scale: 'log',
         spiral: 'archimedean',
         transitionDuration: 500,
