@@ -18,3 +18,22 @@ export const getGraphResults = gql`
         }
     }
 `
+
+export const getMentions = gql`
+    query getMentions($filter: MentionFilterInputTypeQl!) {
+        graphResult {
+            mentions(filter: $filter) {
+                nodes {
+                    userId
+                    userName
+                }
+                edges {
+                    fromUserId
+                    toUserId
+                    tweetId
+                    relationshipType
+                }
+            }
+        }
+    }
+`

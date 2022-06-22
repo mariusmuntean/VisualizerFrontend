@@ -19,11 +19,17 @@ export type Scalars = {
 export type GraphResultQuery = {
   __typename?: 'GraphResultQuery';
   graphResults?: Maybe<GraphResultTypeQl>;
+  mentions?: Maybe<GraphResultTypeQl>;
 };
 
 
 export type GraphResultQueryGraphResultsArgs = {
   amount?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type GraphResultQueryMentionsArgs = {
+  filter?: MentionFilterInputTypeQl;
 };
 
 export type GraphResultTypeQl = {
@@ -51,6 +57,12 @@ export type HashtagTypeQl = {
 export type IsStreamingStateTypeQl = {
   __typename?: 'IsStreamingStateTypeQl';
   isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type MentionFilterInputTypeQl = {
+  amount?: InputMaybe<Scalars['Int']>;
+  authorUserName?: InputMaybe<Scalars['String']>;
+  mentionedUserNames?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
 export enum MentionRelationshipType {
@@ -146,6 +158,13 @@ export type GetGraphResultsQueryVariables = Exact<{
 
 
 export type GetGraphResultsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', graphResults?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null } | null } | null };
+
+export type GetMentionsQueryVariables = Exact<{
+  filter: MentionFilterInputTypeQl;
+}>;
+
+
+export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null } | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -356,3 +375,49 @@ export function useGetGraphResultsLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetGraphResultsQueryHookResult = ReturnType<typeof useGetGraphResultsQuery>;
 export type GetGraphResultsLazyQueryHookResult = ReturnType<typeof useGetGraphResultsLazyQuery>;
 export type GetGraphResultsQueryResult = Apollo.QueryResult<GetGraphResultsQuery, GetGraphResultsQueryVariables>;
+export const GetMentionsDocument = gql`
+    query getMentions($filter: MentionFilterInputTypeQl!) {
+  graphResult {
+    mentions(filter: $filter) {
+      nodes {
+        userId
+        userName
+      }
+      edges {
+        fromUserId
+        toUserId
+        tweetId
+        relationshipType
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMentionsQuery__
+ *
+ * To run a query within a React component, call `useGetMentionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMentionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMentionsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetMentionsQuery(baseOptions: Apollo.QueryHookOptions<GetMentionsQuery, GetMentionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options);
+      }
+export function useGetMentionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMentionsQuery, GetMentionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options);
+        }
+export type GetMentionsQueryHookResult = ReturnType<typeof useGetMentionsQuery>;
+export type GetMentionsLazyQueryHookResult = ReturnType<typeof useGetMentionsLazyQuery>;
+export type GetMentionsQueryResult = Apollo.QueryResult<GetMentionsQuery, GetMentionsQueryVariables>;
