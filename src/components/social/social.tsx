@@ -1,10 +1,10 @@
 import { Alert, Button, Col, Input, Row, Spin } from 'antd'
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
+import { Data, Options } from 'vis-network'
 
 import { MentionRelationshipType, useGetGraphResultsQuery, useGetMentionsQuery } from '../../generated/graphql'
-import { Data, Options } from 'vis-network'
 
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
@@ -16,22 +16,16 @@ export const Social = () => {
         result.refetch({ filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000 } })
     }, [authorUsername, mentionedUsername])
 
-    const reload = () => {
-        result.refetch({ filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000 } })
+    const reload = async () => {
+        await result.refetch({ filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000 } })
     }
 
-    if (result.error) {
-        return <Alert type="error" message={result.error.message} />
-    }
+    const graphData = useMemo(() => {
+        if (!result.data?.graphResult?.mentions) {
+            return undefined
+        }
 
-    if (result.loading) {
-        return <Spin></Spin>
-    }
-
-    if (result.data?.graphResult?.mentions) {
-        // ToDo: request users that initiated a discussion or that were mentioned in a discussion.
-
-        const graphData: Data = {
+        const newGraphData: Data = {
             nodes: result.data.graphResult.mentions.nodes?.map((userNode) => ({ id: userNode?.userId, label: userNode?.userName ?? '', title: userNode?.userName ?? '' })) ?? [],
             edges:
                 result.data.graphResult.mentions.edges
@@ -43,7 +37,11 @@ export const Social = () => {
                     })) ?? [],
         }
 
-        const options: Options = {
+        return newGraphData
+    }, [result.data?.graphResult?.mentions])
+
+    const options = useMemo<Options>(() => {
+        return {
             autoResize: false,
             physics: { stabilization: { enabled: false } },
             layout: {
@@ -61,27 +59,28 @@ export const Social = () => {
                 },
             },
         }
+    }, [])
 
-        return (
-            <>
-                <Row justify="center" align="middle">
-                    <Col style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
-                        <Input autoFocus addonBefore="Author" defaultValue={undefined} onChange={(e) => setAuthorUserName(e.target.value)} />
-                        <ArrowRightOutlined />
-                        <Input autoFocus addonBefore="Mentioned" defaultValue={undefined} onChange={(e) => setMentionedUserName(e.target.value)} />
-                        <Button onClick={reload} icon={<ReloadOutlined />}>
-                            Reload
-                        </Button>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24}>
-                        <VisNetwork data={graphData} options={options} style={{ height: '64em' }} />
-                    </Col>
-                </Row>
-            </>
-        )
-    }
+    return (
+        <>
+            <Row justify="center" align="middle">
+                <Col style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
+                    <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} onChange={(e) => setAuthorUserName(e.target.value)} />
+                    <ArrowRightOutlined />
+                    <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} onChange={(e) => setMentionedUserName(e.target.value)} />
+                    <Button onClick={reload} icon={<ReloadOutlined />}>
+                        Reload
+                    </Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}>
+                    {result.error && <Alert type="error" message={result.error?.message} />}
+                    {result.loading && <Spin></Spin>}
 
-    return <div>social</div>
+                    {graphData && <VisNetwork data={graphData} options={options} style={{ height: '64em' }} />}
+                </Col>
+            </Row>
+        </>
+    )
 }
