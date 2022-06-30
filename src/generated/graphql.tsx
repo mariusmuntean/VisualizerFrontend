@@ -62,7 +62,9 @@ export type IsStreamingStateTypeQl = {
 export type MentionFilterInputTypeQl = {
   amount?: InputMaybe<Scalars['Int']>;
   authorUserName?: InputMaybe<Scalars['String']>;
+  maxHops?: InputMaybe<Scalars['Int']>;
   mentionedUserNames?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  minHops?: InputMaybe<Scalars['Int']>;
 };
 
 export enum MentionRelationshipType {

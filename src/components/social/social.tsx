@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Input, List, Row, Spin } from 'antd'
+import { Alert, Button, Col, Input, InputNumber, List, Row, Spin } from 'antd'
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
@@ -9,15 +9,20 @@ import { MentionRelationshipType, useGetGraphResultsQuery, useGetMentionsQuery }
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
     const [mentionedUsername, setMentionedUserName] = useState<string | undefined>(undefined)
+    const [maxHops, setMaxHops] = useState<number>(5)
 
     const result = useGetMentionsQuery({ variables: { filter: { amount: 550 } }, fetchPolicy: 'no-cache' })
 
     useEffect(() => {
-        result.refetch({ filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000 } })
-    }, [authorUsername, mentionedUsername])
+        result.refetch({
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: 1, maxHops: maxHops },
+        })
+    }, [authorUsername, mentionedUsername, maxHops])
 
     const reload = async () => {
-        await result.refetch({ filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000 } })
+        await result.refetch({
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: 1, maxHops: maxHops },
+        })
     }
 
     const graphData = useMemo(() => {
@@ -65,9 +70,12 @@ export const Social = () => {
         <>
             <Row justify="center" align="middle">
                 <Col style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
-                    <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} onChange={(e) => setAuthorUserName(e.target.value)} />
-                    <ArrowRightOutlined />
-                    <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} onChange={(e) => setMentionedUserName(e.target.value)} />
+                    <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} onChange={(e) => setAuthorUserName(e.target.value)} size="large" />
+                    <div style={{ width: '22em', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.1em' }}>
+                        <ArrowRightOutlined />
+                        <InputNumber min={1} max={100} size="small" addonBefore={'Hops'} value={maxHops} onChange={(newVal) => setMaxHops(newVal)}></InputNumber>
+                    </div>
+                    <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} onChange={(e) => setMentionedUserName(e.target.value)} size="large" />
                     <Button onClick={reload} icon={<ReloadOutlined />}>
                         Reload
                     </Button>
