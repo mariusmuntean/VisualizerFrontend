@@ -1,8 +1,8 @@
-import { Alert, Button, Col, Input, Row, Spin } from 'antd'
+import { Alert, Button, Col, Input, List, Row, Spin } from 'antd'
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
-import { Data, Options } from 'vis-network'
+import { Data, Options, Node } from 'vis-network'
 
 import { MentionRelationshipType, useGetGraphResultsQuery, useGetMentionsQuery } from '../../generated/graphql'
 
@@ -74,11 +74,25 @@ export const Social = () => {
                 </Col>
             </Row>
             <Row>
-                <Col span={24}>
+                <Col span={20}>
                     {result.error && <Alert type="error" message={result.error?.message} />}
                     {result.loading && <Spin></Spin>}
 
                     {graphData && <VisNetwork data={graphData} options={options} style={{ height: '64em' }} />}
+                </Col>
+                <Col span={4}>
+                    <List
+                        bordered
+                        size="small"
+                        dataSource={(graphData?.nodes as Node[]) || []}
+                        pagination={{ pageSize: 10 }}
+                        header={
+                            <div>
+                                <b>Users</b>
+                            </div>
+                        }
+                        renderItem={(item) => <List.Item>{item.label}</List.Item>}
+                    ></List>
                 </Col>
             </Row>
         </>
