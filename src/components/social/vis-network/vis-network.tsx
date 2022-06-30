@@ -7,9 +7,10 @@ interface Props {
     data: Data
     options?: Options
     style?: CSSProperties
+    onNodeSelect?: (params: any) => void
 }
 
-export const VisNetwork = ({ data, options = {}, style }: Props) => {
+export const VisNetwork = ({ data, options = {}, style, onNodeSelect }: Props) => {
     const visJsRef = useRef(null)
     useEffect(() => {
         if (!visJsRef.current) {
@@ -17,6 +18,9 @@ export const VisNetwork = ({ data, options = {}, style }: Props) => {
         }
 
         const network = new Network(visJsRef.current, data, options)
+        if (onNodeSelect) {
+            network.on('selectNode', (p) => onNodeSelect(p))
+        }
         // Use `network` here to configure events, etc
     }, [visJsRef, data, options])
 

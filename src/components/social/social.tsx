@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Input, InputNumber, List, Row, Spin } from 'antd'
+import { Alert, Button, Col, Input, InputNumber, List, notification, Row, Spin } from 'antd'
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
@@ -66,6 +66,17 @@ export const Social = () => {
         }
     }, [])
 
+    const onNodeSelect = async (params: any) => {
+        const userId = (params.nodes as Node[])?.[0]
+        if (userId && result?.data?.graphResult?.mentions?.nodes) {
+            const node = result?.data?.graphResult?.mentions?.nodes.find((node) => node?.userId === userId)
+            if (node) {
+                await navigator.clipboard.writeText(node.userName!)
+                notification.info({ message: 'Copied ' + node.userName + ' to clipboard', duration: 3 })
+            }
+        }
+    }
+
     return (
         <>
             <Row justify="center" align="middle">
@@ -86,7 +97,7 @@ export const Social = () => {
                     {result.error && <Alert type="error" message={result.error?.message} />}
                     {result.loading && <Spin></Spin>}
 
-                    {graphData && <VisNetwork data={graphData} options={options} style={{ height: '64em' }} />}
+                    {graphData && <VisNetwork data={graphData} options={options} onNodeSelect={onNodeSelect} style={{ height: '64em' }} />}
                 </Col>
                 <Col span={4}>
                     <List
