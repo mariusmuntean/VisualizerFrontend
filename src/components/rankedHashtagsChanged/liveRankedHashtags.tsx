@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Col, Input, Row, Space, Spin, Table } from 'antd'
+import { Button, Col, Input, notification, Row, Space, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
 import { debounce, toNumber } from 'lodash'
 
@@ -85,6 +85,10 @@ export const LiveRankedHashtags = () => {
 
     const wordcloudCallbacks: CallbacksProp = {
         getWordTooltip: (w: Word) => `hashtag appears ${w.value} time(s)`,
+        onWordClick: async (word, event) => {
+            await navigator.clipboard.writeText(word.text)
+            notification.success({ message: `Copied ${word.text} to clipboard` })
+        },
     }
 
     return (
@@ -107,6 +111,7 @@ export const LiveRankedHashtags = () => {
             <Row justify="center" align="middle">
                 <Col span={4}>
                     <Table
+                        size="small"
                         dataSource={[
                             ...wordCloudData.sort(function (a, b) {
                                 return b.value - a.value
