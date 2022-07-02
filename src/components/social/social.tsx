@@ -9,19 +9,20 @@ import { MentionRelationshipType, useGetGraphResultsQuery, useGetMentionsQuery }
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
     const [mentionedUsername, setMentionedUserName] = useState<string | undefined>(undefined)
+    const [minHops, setMinHops] = useState<number>(1)
     const [maxHops, setMaxHops] = useState<number>(5)
 
     const result = useGetMentionsQuery({ variables: { filter: { amount: 550 } }, fetchPolicy: 'no-cache' })
 
     useEffect(() => {
         result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: 1, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 900, minHops: minHops, maxHops: maxHops },
         })
-    }, [authorUsername, mentionedUsername, maxHops])
+    }, [authorUsername, mentionedUsername, minHops, maxHops])
 
     const reload = async () => {
         await result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: 1, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 900, minHops: minHops, maxHops: maxHops },
         })
     }
 
@@ -31,7 +32,13 @@ export const Social = () => {
         }
 
         const newGraphData: Data = {
-            nodes: result.data.graphResult.mentions.nodes?.map((userNode) => ({ id: userNode?.userId, label: userNode?.userName ?? '', title: userNode?.userName ?? '' })) ?? [],
+            nodes:
+                result.data.graphResult.mentions.nodes?.map((userNode) => ({
+                    id: userNode?.userId,
+                    label: userNode?.userName ?? '',
+                    title: userNode?.userName ?? '',
+                    color: userNode?.userName === authorUsername ? '#4285F4' : userNode?.userName === mentionedUsername ? '#34A853' : undefined,
+                })) ?? [],
             edges:
                 result.data.graphResult.mentions.edges
                     ?.filter((relationship) => relationship?.relationshipType === MentionRelationshipType.Mentioned)
@@ -47,7 +54,7 @@ export const Social = () => {
 
     const options = useMemo<Options>(() => {
         return {
-            autoResize: false,
+            autoResize: true,
             physics: { stabilization: { enabled: false } },
             layout: {
                 improvedLayout: true,
@@ -79,25 +86,32 @@ export const Social = () => {
 
     return (
         <>
-            <Row justify="center" align="middle">
-                <Col style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
+            <Row justify="center" align="middle" gutter={[10, 20]}>
+                <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} onChange={(e) => setAuthorUserName(e.target.value)} size="large" />
-                    <div style={{ width: '22em', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.1em' }}>
+                </Col>
+                <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.1em' }}>
                         <ArrowRightOutlined />
-                        <InputNumber min={1} max={100} size="small" addonBefore={'Hops'} value={maxHops} onChange={(newVal) => setMaxHops(newVal)}></InputNumber>
+                        <div style={{ display: 'flex', flexDirection: 'row', gap: '0.2em' }}>
+                            <InputNumber min={1} max={100} size="small" addonBefore={'MinHops'} value={minHops} onChange={(newVal) => setMinHops(newVal)}></InputNumber>
+                            <InputNumber min={1} max={100} size="small" addonBefore={'MaxHops'} value={maxHops} onChange={(newVal) => setMaxHops(newVal)}></InputNumber>
+                        </div>
                     </div>
+                </Col>
+                <Col span={8} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} onChange={(e) => setMentionedUserName(e.target.value)} size="large" />
                     <Button onClick={reload} icon={<ReloadOutlined />}>
                         Reload
                     </Button>
                 </Col>
             </Row>
-            <Row>
+            <Row style={{ height: '100%' }} gutter={[10, 20]}>
                 <Col span={20}>
-                    {result.error && <Alert type="error" message={result.error?.message} />}
+                    {result.error && <Alert type="error" message={result.error?.graphQLErrors.map((gqlErr) => gqlErr.message)} closable />}
                     {result.loading && <Spin></Spin>}
 
-                    {graphData && <VisNetwork data={graphData} options={options} onNodeSelect={onNodeSelect} style={{ height: '64em' }} />}
+                    {graphData && <VisNetwork data={graphData} options={options} onNodeSelect={onNodeSelect} style={{ height: '80vh' }} />}
                 </Col>
                 <Col span={4}>
                     <List
