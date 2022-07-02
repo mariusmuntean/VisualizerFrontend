@@ -33,6 +33,9 @@ export const getMentions = gql`
                     tweetId
                     relationshipType
                 }
+                statistics {
+                    queryInternalExecutionTime
+                }
             }
         }
     }
