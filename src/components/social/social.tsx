@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
 import { Data, Options, Node } from 'vis-network'
 
-import { MentionRelationshipType, useGetGraphResultsQuery, useGetMentionsQuery } from '../../generated/graphql'
+import { MentionRelationshipType, useGetMentionsQuery } from '../../generated/graphql'
 
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
@@ -16,13 +16,13 @@ export const Social = () => {
 
     useEffect(() => {
         result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 900, minHops: minHops, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 2000, minHops: minHops, maxHops: maxHops },
         })
     }, [authorUsername, mentionedUsername, minHops, maxHops])
 
     const reload = async () => {
         await result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 900, minHops: minHops, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 2000, minHops: minHops, maxHops: maxHops },
         })
     }
 
@@ -88,7 +88,7 @@ export const Social = () => {
         <>
             <Row justify="center" align="middle" gutter={[10, 20]}>
                 <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
-                    <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} onChange={(e) => setAuthorUserName(e.target.value)} size="large" />
+                    <Input addonBefore="Author" defaultValue={undefined} value={authorUsername} allowClear onChange={(e) => setAuthorUserName(e.target.value)} size="large" />
                 </Col>
                 <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '0.1em' }}>
@@ -100,13 +100,25 @@ export const Social = () => {
                     </div>
                 </Col>
                 <Col span={8} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
-                    <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} onChange={(e) => setMentionedUserName(e.target.value)} size="large" />
+                    <Input
+                        addonBefore="Mentioned"
+                        defaultValue={undefined}
+                        value={mentionedUsername}
+                        allowClear
+                        onChange={(e) => setMentionedUserName(e.target.value)}
+                        size="large"
+                    />
                     <Button onClick={reload} icon={<ReloadOutlined />}>
                         Reload
                     </Button>
                 </Col>
             </Row>
-            <Row style={{ height: '100%' }} gutter={[10, 20]}>
+            <Row style={{ height: 'auto' }} justify="center" align="middle" gutter={[10, 20]}>
+                <Col>
+                    <span>{result.data?.graphResult?.mentions?.statistics?.queryInternalExecutionTime}</span>
+                </Col>
+            </Row>
+            <Row style={{ height: '100%' }} justify="center" align="middle" gutter={[10, 20]}>
                 <Col span={20}>
                     {result.error && <Alert type="error" message={result.error?.graphQLErrors.map((gqlErr) => gqlErr.message)} closable />}
                     {result.loading && <Spin></Spin>}
@@ -118,7 +130,13 @@ export const Social = () => {
                         bordered
                         size="small"
                         dataSource={(graphData?.nodes as Node[]) || []}
-                        pagination={{ pageSize: 10 }}
+                        pagination={{
+                            defaultPageSize: 10,
+                            hideOnSinglePage: true,
+                            pageSizeOptions: [5, 10, 20, 50, 100],
+                            size: 'small',
+                            showTotal: (total: number, range: [number, number]) => `Total ${total}`,
+                        }}
                         header={
                             <div>
                                 <b>Users</b>

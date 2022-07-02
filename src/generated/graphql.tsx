@@ -32,10 +32,16 @@ export type GraphResultQueryMentionsArgs = {
   filter?: MentionFilterInputTypeQl;
 };
 
+export type GraphResultStatisticsTypeQl = {
+  __typename?: 'GraphResultStatisticsTypeQl';
+  queryInternalExecutionTime?: Maybe<Scalars['String']>;
+};
+
 export type GraphResultTypeQl = {
   __typename?: 'GraphResultTypeQl';
   edges?: Maybe<Array<Maybe<MentionRelationshipTypeQl>>>;
   nodes?: Maybe<Array<Maybe<UserNodeTypeQl>>>;
+  statistics?: Maybe<GraphResultStatisticsTypeQl>;
 };
 
 export type HashtagQuery = {
@@ -166,7 +172,7 @@ export type GetMentionsQueryVariables = Exact<{
 }>;
 
 
-export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null } | null } | null };
+export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null, statistics?: { __typename?: 'GraphResultStatisticsTypeQl', queryInternalExecutionTime?: string | null } | null } | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -390,6 +396,9 @@ export const GetMentionsDocument = gql`
         toUserId
         tweetId
         relationshipType
+      }
+      statistics {
+        queryInternalExecutionTime
       }
     }
   }
