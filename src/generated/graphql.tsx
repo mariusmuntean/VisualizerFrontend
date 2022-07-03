@@ -14,12 +14,14 @@ export type Scalars = {
   Int: number;
   Float: number;
   Decimal: any;
+  Long: any;
 };
 
 export type GraphResultQuery = {
   __typename?: 'GraphResultQuery';
   graphResults?: Maybe<GraphResultTypeQl>;
   mentions?: Maybe<GraphResultTypeQl>;
+  userCount?: Maybe<Scalars['Long']>;
 };
 
 
@@ -159,6 +161,11 @@ export type RankedHashtagsChangedSubscriptionVariables = Exact<{
 
 
 export type RankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
+
+export type GetUserCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserCountQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', userCount?: any | null } | null };
 
 export type GetGraphResultsQueryVariables = Exact<{
   amount: Scalars['Int'];
@@ -337,6 +344,40 @@ export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.Subscr
       }
 export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
 export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
+export const GetUserCountDocument = gql`
+    query getUserCount {
+  graphResult {
+    userCount
+  }
+}
+    `;
+
+/**
+ * __useGetUserCountQuery__
+ *
+ * To run a query within a React component, call `useGetUserCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserCountQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCountQuery, GetUserCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options);
+      }
+export function useGetUserCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCountQuery, GetUserCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options);
+        }
+export type GetUserCountQueryHookResult = ReturnType<typeof useGetUserCountQuery>;
+export type GetUserCountLazyQueryHookResult = ReturnType<typeof useGetUserCountLazyQuery>;
+export type GetUserCountQueryResult = Apollo.QueryResult<GetUserCountQuery, GetUserCountQueryVariables>;
 export const GetGraphResultsDocument = gql`
     query getGraphResults($amount: Int!) {
   graphResult {

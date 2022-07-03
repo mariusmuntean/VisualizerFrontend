@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { VisNetwork } from './vis-network'
 import { Data, Options, Node } from 'vis-network'
 
-import { MentionRelationshipType, useGetMentionsQuery } from '../../generated/graphql'
+import { MentionRelationshipType, useGetMentionsQuery, useGetUserCountQuery } from '../../generated/graphql'
 
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
@@ -12,35 +12,36 @@ export const Social = () => {
     const [minHops, setMinHops] = useState<number>(1)
     const [maxHops, setMaxHops] = useState<number>(5)
 
-    const result = useGetMentionsQuery({ variables: { filter: { amount: 550 } }, fetchPolicy: 'no-cache' })
+    const userCountResult = useGetUserCountQuery({ fetchPolicy: 'network-only' })
+    const mentionsResult = useGetMentionsQuery({ variables: { filter: { amount: 550 } }, fetchPolicy: 'no-cache' })
 
     useEffect(() => {
-        result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 2000, minHops: minHops, maxHops: maxHops },
+        mentionsResult.refetch({
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: minHops, maxHops: maxHops },
         })
     }, [authorUsername, mentionedUsername, minHops, maxHops])
 
     const reload = async () => {
-        await result.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 2000, minHops: minHops, maxHops: maxHops },
+        await mentionsResult.refetch({
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: minHops, maxHops: maxHops },
         })
     }
 
     const graphData = useMemo(() => {
-        if (!result.data?.graphResult?.mentions) {
+        if (!mentionsResult.data?.graphResult?.mentions) {
             return undefined
         }
 
         const newGraphData: Data = {
             nodes:
-                result.data.graphResult.mentions.nodes?.map((userNode) => ({
+                mentionsResult.data.graphResult.mentions.nodes?.map((userNode) => ({
                     id: userNode?.userId,
                     label: userNode?.userName ?? '',
                     title: userNode?.userName ?? '',
                     color: userNode?.userName === authorUsername ? '#4285F4' : userNode?.userName === mentionedUsername ? '#34A853' : undefined,
                 })) ?? [],
             edges:
-                result.data.graphResult.mentions.edges
+                mentionsResult.data.graphResult.mentions.edges
                     ?.filter((relationship) => relationship?.relationshipType === MentionRelationshipType.Mentioned)
                     ?.map((relationship) => ({
                         from: relationship?.fromUserId,
@@ -50,7 +51,7 @@ export const Social = () => {
         }
 
         return newGraphData
-    }, [result.data?.graphResult?.mentions])
+    }, [mentionsResult.data?.graphResult?.mentions])
 
     const options = useMemo<Options>(() => {
         return {
@@ -75,8 +76,8 @@ export const Social = () => {
 
     const onNodeSelect = async (params: any) => {
         const userId = (params.nodes as Node[])?.[0]
-        if (userId && result?.data?.graphResult?.mentions?.nodes) {
-            const node = result?.data?.graphResult?.mentions?.nodes.find((node) => node?.userId === userId)
+        if (userId && mentionsResult?.data?.graphResult?.mentions?.nodes) {
+            const node = mentionsResult?.data?.graphResult?.mentions?.nodes.find((node) => node?.userId === userId)
             if (node) {
                 await navigator.clipboard.writeText(node.userName!)
                 notification.info({ message: 'Copied ' + node.userName + ' to clipboard', duration: 3 })
@@ -115,13 +116,16 @@ export const Social = () => {
             </Row>
             <Row style={{ height: 'auto' }} justify="center" align="middle" gutter={[10, 20]}>
                 <Col>
-                    <span>{result.data?.graphResult?.mentions?.statistics?.queryInternalExecutionTime}</span>
+                    <div style={{ display: 'flex', flexDirection: 'row', gap: '1em' }}>
+                        <span>{`Total user count: ${userCountResult?.data?.graphResult?.userCount}`}</span>
+                        <span>{`Query duration: ${mentionsResult.data?.graphResult?.mentions?.statistics?.queryInternalExecutionTime}`}</span>
+                    </div>
                 </Col>
             </Row>
             <Row style={{ height: '100%' }} justify="center" align="middle" gutter={[10, 20]}>
                 <Col span={20}>
-                    {result.error && <Alert type="error" message={result.error?.graphQLErrors.map((gqlErr) => gqlErr.message)} closable />}
-                    {result.loading && <Spin></Spin>}
+                    {mentionsResult.error && <Alert type="error" message={mentionsResult.error?.graphQLErrors.map((gqlErr) => gqlErr.message)} closable />}
+                    {mentionsResult.loading && <Spin></Spin>}
 
                     {graphData && <VisNetwork data={graphData} options={options} onNodeSelect={onNodeSelect} style={{ height: '80vh' }} />}
                 </Col>

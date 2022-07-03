@@ -1,5 +1,13 @@
 import { gql } from '@apollo/client'
 
+export const getTotalUserCount = gql`
+    query getUserCount {
+        graphResult {
+            userCount
+        }
+    }
+`
+
 export const getGraphResults = gql`
     query getGraphResults($amount: Int!) {
         graphResult {
