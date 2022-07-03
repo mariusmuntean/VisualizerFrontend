@@ -11,19 +11,20 @@ export const Social = () => {
     const [mentionedUsername, setMentionedUserName] = useState<string | undefined>(undefined)
     const [minHops, setMinHops] = useState<number>(1)
     const [maxHops, setMaxHops] = useState<number>(5)
+    const [limit, setLimit] = useState<number>(550)
 
     const userCountResult = useGetUserCountQuery({ fetchPolicy: 'network-only' })
-    const mentionsResult = useGetMentionsQuery({ variables: { filter: { amount: 550 } }, fetchPolicy: 'no-cache' })
+    const mentionsResult = useGetMentionsQuery({ variables: { filter: { amount: limit } }, fetchPolicy: 'no-cache' })
 
     useEffect(() => {
         mentionsResult.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: minHops, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: limit, minHops: minHops, maxHops: maxHops },
         })
-    }, [authorUsername, mentionedUsername, minHops, maxHops])
+    }, [authorUsername, mentionedUsername, minHops, maxHops, limit])
 
     const reload = async () => {
         await mentionsResult.refetch({
-            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: 1000, minHops: minHops, maxHops: maxHops },
+            filter: { authorUserName: authorUsername, mentionedUserNames: mentionedUsername ? [mentionedUsername] : undefined, amount: limit, minHops: minHops, maxHops: maxHops },
         })
     }
 
@@ -100,7 +101,7 @@ export const Social = () => {
                         </div>
                     </div>
                 </Col>
-                <Col span={8} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
+                <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <Input
                         addonBefore="Mentioned"
                         defaultValue={undefined}
@@ -109,6 +110,11 @@ export const Social = () => {
                         onChange={(e) => setMentionedUserName(e.target.value)}
                         size="large"
                     />
+                </Col>
+                <Col span={3} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
+                    <InputNumber min={1} max={100000} size="middle" addonBefore={'Limit'} value={limit} onChange={(newVal) => setLimit(newVal)}></InputNumber>
+                </Col>
+                <Col span={2} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <Button onClick={reload} icon={<ReloadOutlined />}>
                         Reload
                     </Button>
