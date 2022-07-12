@@ -13,8 +13,34 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
+  DateTime: any;
   Decimal: any;
   Long: any;
+};
+
+export type CashtagEntityTypeQl = {
+  __typename?: 'CashtagEntityTypeQl';
+  end?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  tag?: Maybe<Scalars['String']>;
+};
+
+export type FindTweetsInputTypeQl = {
+  authorId?: InputMaybe<Scalars['String']>;
+  hashtags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  pageNumber?: InputMaybe<Scalars['Int']>;
+  pageSize?: InputMaybe<Scalars['Int']>;
+  searchTerm?: InputMaybe<Scalars['String']>;
+  startingFrom?: InputMaybe<Scalars['DateTime']>;
+  tweetId?: InputMaybe<Scalars['String']>;
+  upTo?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type GeoLocTypeQl = {
+  __typename?: 'GeoLocTypeQl';
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
 };
 
 export type GraphResultQuery = {
@@ -88,6 +114,12 @@ export type MentionRelationshipTypeQl = {
   tweetId: Scalars['String'];
 };
 
+export type ReferencedTweetTypeQl = {
+  __typename?: 'ReferencedTweetTypeQl';
+  id?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+};
+
 export type StreamingMutations = {
   __typename?: 'StreamingMutations';
   /** Start ingesting the live Twitter feed */
@@ -100,6 +132,55 @@ export type StreamingQuery = {
   __typename?: 'StreamingQuery';
   /** Whether or not the live ingestion is running. */
   isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type TweetEntitiesTypeQl = {
+  __typename?: 'TweetEntitiesTypeQl';
+  cashtags?: Maybe<Array<Maybe<CashtagEntityTypeQl>>>;
+  hashtags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  mentions?: Maybe<Array<Maybe<UserMentionTypeQl>>>;
+};
+
+export type TweetMetricsTypeQl = {
+  __typename?: 'TweetMetricsTypeQl';
+  impressionCount?: Maybe<Scalars['Int']>;
+  likeCount?: Maybe<Scalars['Int']>;
+  replyCount?: Maybe<Scalars['Int']>;
+  retweetCount?: Maybe<Scalars['Int']>;
+  urlLinkClicks?: Maybe<Scalars['Int']>;
+  userProfileClicks?: Maybe<Scalars['Int']>;
+};
+
+export type TweetQuery = {
+  __typename?: 'TweetQuery';
+  find?: Maybe<Array<Maybe<TweetTypeQl>>>;
+};
+
+
+export type TweetQueryFindArgs = {
+  filter?: InputMaybe<FindTweetsInputTypeQl>;
+};
+
+export type TweetTypeQl = {
+  __typename?: 'TweetTypeQl';
+  authorId?: Maybe<Scalars['String']>;
+  conversationId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['Long']>;
+  entities?: Maybe<TweetEntitiesTypeQl>;
+  geoLoc?: Maybe<GeoLocTypeQl>;
+  id?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  organicMetrics?: Maybe<TweetMetricsTypeQl>;
+  referencedTweets?: Maybe<Array<Maybe<ReferencedTweetTypeQl>>>;
+  source?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+};
+
+export type UserMentionTypeQl = {
+  __typename?: 'UserMentionTypeQl';
+  end?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type UserNodeTypeQl = {
@@ -118,6 +199,7 @@ export type VisualizerQuery = {
   graphResult?: Maybe<GraphResultQuery>;
   hashtag?: Maybe<HashtagQuery>;
   streaming?: Maybe<StreamingQuery>;
+  tweet?: Maybe<TweetQuery>;
 };
 
 export type VisualizerSubscription = {
