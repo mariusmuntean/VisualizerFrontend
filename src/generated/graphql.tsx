@@ -13,8 +13,37 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
+  DateTime: any;
   Decimal: any;
   Long: any;
+};
+
+export type CashtagEntityTypeQl = {
+  __typename?: 'CashtagEntityTypeQl';
+  end?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  tag?: Maybe<Scalars['String']>;
+};
+
+export type FindTweetsInputTypeQl = {
+  authorId?: InputMaybe<Scalars['String']>;
+  hashtags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  pageNumber?: InputMaybe<Scalars['Int']>;
+  pageSize?: InputMaybe<Scalars['Int']>;
+  searchTerm?: InputMaybe<Scalars['String']>;
+  sortField?: InputMaybe<SortField>;
+  sortOrder?: InputMaybe<SortOrder>;
+  startingFrom?: InputMaybe<Scalars['DateTime']>;
+  tweetId?: InputMaybe<Scalars['String']>;
+  upTo?: InputMaybe<Scalars['DateTime']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
+export type GeoLocTypeQl = {
+  __typename?: 'GeoLocTypeQl';
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
 };
 
 export type GraphResultQuery = {
@@ -88,6 +117,22 @@ export type MentionRelationshipTypeQl = {
   tweetId: Scalars['String'];
 };
 
+export type ReferencedTweetTypeQl = {
+  __typename?: 'ReferencedTweetTypeQl';
+  id?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+};
+
+export enum SortField {
+  CreatedAt = 'CREATED_AT',
+  Username = 'USERNAME'
+}
+
+export enum SortOrder {
+  Ascending = 'ASCENDING',
+  Descending = 'DESCENDING'
+}
+
 export type StreamingMutations = {
   __typename?: 'StreamingMutations';
   /** Start ingesting the live Twitter feed */
@@ -100,6 +145,62 @@ export type StreamingQuery = {
   __typename?: 'StreamingQuery';
   /** Whether or not the live ingestion is running. */
   isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type TweetEntitiesTypeQl = {
+  __typename?: 'TweetEntitiesTypeQl';
+  cashtags?: Maybe<Array<Maybe<CashtagEntityTypeQl>>>;
+  hashtags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  mentions?: Maybe<Array<Maybe<UserMentionTypeQl>>>;
+};
+
+export type TweetMetricsTypeQl = {
+  __typename?: 'TweetMetricsTypeQl';
+  impressionCount?: Maybe<Scalars['Int']>;
+  likeCount?: Maybe<Scalars['Int']>;
+  replyCount?: Maybe<Scalars['Int']>;
+  retweetCount?: Maybe<Scalars['Int']>;
+  urlLinkClicks?: Maybe<Scalars['Int']>;
+  userProfileClicks?: Maybe<Scalars['Int']>;
+};
+
+export type TweetModelsPageTypeQl = {
+  __typename?: 'TweetModelsPageTypeQl';
+  total?: Maybe<Scalars['Int']>;
+  tweets?: Maybe<Array<Maybe<TweetTypeQl>>>;
+};
+
+export type TweetQuery = {
+  __typename?: 'TweetQuery';
+  find?: Maybe<TweetModelsPageTypeQl>;
+};
+
+
+export type TweetQueryFindArgs = {
+  filter?: InputMaybe<FindTweetsInputTypeQl>;
+};
+
+export type TweetTypeQl = {
+  __typename?: 'TweetTypeQl';
+  authorId?: Maybe<Scalars['String']>;
+  conversationId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
+  entities?: Maybe<TweetEntitiesTypeQl>;
+  geoLoc?: Maybe<GeoLocTypeQl>;
+  id?: Maybe<Scalars['String']>;
+  lang?: Maybe<Scalars['String']>;
+  organicMetrics?: Maybe<TweetMetricsTypeQl>;
+  referencedTweets?: Maybe<Array<Maybe<ReferencedTweetTypeQl>>>;
+  source?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
+};
+
+export type UserMentionTypeQl = {
+  __typename?: 'UserMentionTypeQl';
+  end?: Maybe<Scalars['Int']>;
+  start?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type UserNodeTypeQl = {
@@ -118,6 +219,7 @@ export type VisualizerQuery = {
   graphResult?: Maybe<GraphResultQuery>;
   hashtag?: Maybe<HashtagQuery>;
   streaming?: Maybe<StreamingQuery>;
+  tweet?: Maybe<TweetQuery>;
 };
 
 export type VisualizerSubscription = {
@@ -180,6 +282,13 @@ export type GetMentionsQueryVariables = Exact<{
 
 
 export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null, statistics?: { __typename?: 'GraphResultStatisticsTypeQl', queryInternalExecutionTime?: string | null } | null } | null } | null };
+
+export type GetFilteredTweetsQueryVariables = Exact<{
+  filter: FindTweetsInputTypeQl;
+}>;
+
+
+export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -473,3 +582,57 @@ export function useGetMentionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetMentionsQueryHookResult = ReturnType<typeof useGetMentionsQuery>;
 export type GetMentionsLazyQueryHookResult = ReturnType<typeof useGetMentionsLazyQuery>;
 export type GetMentionsQueryResult = Apollo.QueryResult<GetMentionsQuery, GetMentionsQueryVariables>;
+export const GetFilteredTweetsDocument = gql`
+    query getFilteredTweets($filter: FindTweetsInputTypeQl!) {
+  tweet {
+    find(filter: $filter) {
+      total
+      tweets {
+        id
+        authorId
+        username
+        conversationId
+        lang
+        source
+        text
+        createdAt
+        geoLoc {
+          latitude
+          longitude
+        }
+        entities {
+          hashtags
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFilteredTweetsQuery__
+ *
+ * To run a query within a React component, call `useGetFilteredTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilteredTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilteredTweetsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetFilteredTweetsQuery(baseOptions: Apollo.QueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
+      }
+export function useGetFilteredTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
+        }
+export type GetFilteredTweetsQueryHookResult = ReturnType<typeof useGetFilteredTweetsQuery>;
+export type GetFilteredTweetsLazyQueryHookResult = ReturnType<typeof useGetFilteredTweetsLazyQuery>;
+export type GetFilteredTweetsQueryResult = Apollo.QueryResult<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>;
