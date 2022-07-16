@@ -164,9 +164,15 @@ export type TweetMetricsTypeQl = {
   userProfileClicks?: Maybe<Scalars['Int']>;
 };
 
+export type TweetModelsPageTypeQl = {
+  __typename?: 'TweetModelsPageTypeQl';
+  total?: Maybe<Scalars['Int']>;
+  tweets?: Maybe<Array<Maybe<TweetTypeQl>>>;
+};
+
 export type TweetQuery = {
   __typename?: 'TweetQuery';
-  find?: Maybe<Array<Maybe<TweetTypeQl>>>;
+  find?: Maybe<TweetModelsPageTypeQl>;
 };
 
 
@@ -178,7 +184,7 @@ export type TweetTypeQl = {
   __typename?: 'TweetTypeQl';
   authorId?: Maybe<Scalars['String']>;
   conversationId?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['Long']>;
+  createdAt?: Maybe<Scalars['DateTime']>;
   entities?: Maybe<TweetEntitiesTypeQl>;
   geoLoc?: Maybe<GeoLocTypeQl>;
   id?: Maybe<Scalars['String']>;
@@ -282,7 +288,7 @@ export type GetFilteredTweetsQueryVariables = Exact<{
 }>;
 
 
-export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null } | null } | null> | null } | null };
+export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
 export const GetHashtagsDocument = gql`
@@ -580,20 +586,23 @@ export const GetFilteredTweetsDocument = gql`
     query getFilteredTweets($filter: FindTweetsInputTypeQl!) {
   tweet {
     find(filter: $filter) {
-      id
-      authorId
-      username
-      conversationId
-      lang
-      source
-      text
-      createdAt
-      geoLoc {
-        latitude
-        longitude
-      }
-      entities {
-        hashtags
+      total
+      tweets {
+        id
+        authorId
+        username
+        conversationId
+        lang
+        source
+        text
+        createdAt
+        geoLoc {
+          latitude
+          longitude
+        }
+        entities {
+          hashtags
+        }
       }
     }
   }
