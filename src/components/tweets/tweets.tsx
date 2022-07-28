@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, InputNumber, DatePicker, Select, Tag, Space, Card, Table } from 'antd'
+import { Row, Col, Input, DatePicker, Select, Tag, Space, Card, Table } from 'antd'
 import moment from 'moment'
 const { Option } = Select
 
@@ -215,7 +215,7 @@ export const Tweets = () => {
                 <Col span={24}>
                     <Table
                         loading={loading}
-                        dataSource={data?.tweet?.find?.tweets ?? []}
+                        dataSource={(data?.tweet?.find?.tweets as TweetTypeQl[]) ?? []}
                         columns={columns}
                         sortDirections={['descend', 'ascend']}
                         onChange={(pagination, filters, sorter: SorterResult<TweetTypeQl> | SorterResult<TweetTypeQl>[]) => {
