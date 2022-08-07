@@ -1,11 +1,13 @@
+import { Config } from './../../config'
+
 export const startStreaming = async (): Promise<Response> => {
-    return fetch('https://visualizer-backend.mangoplant-a01d49a3.westeurope.azurecontainerapps.io/Test/startStreaming', {
+    return fetch(`https://${Config.visualizerBackendUrl}/Test/startStreaming`, {
         method: 'POST',
     })
 }
 
 export const stopStreaming = async (): Promise<Response> => {
-    return fetch('https://visualizer-backend.mangoplant-a01d49a3.westeurope.azurecontainerapps.io/Test/stopStreaming', {
+    return fetch(`https://${Config.visualizerBackendUrl}/Test/stopStreaming`, {
         method: 'POST',
     })
 }

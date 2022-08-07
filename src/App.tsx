@@ -1,5 +1,5 @@
 import { Button, Col, Row, Tabs } from 'antd'
-import { DownloadOutlined, StopOutlined, UpCircleOutlined } from '@ant-design/icons'
+import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
 
 import './App.css'
 import 'antd/dist/antd.css'

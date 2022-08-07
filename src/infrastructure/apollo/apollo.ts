@@ -3,16 +3,18 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 
+import { Config } from './../../config'
+
 // link for queries and mutations
 const httpLink = new HttpLink({
-    uri: 'https://visualizer-backend.mangoplant-a01d49a3.westeurope.azurecontainerapps.io/graphql',
+    uri: `https://${Config.visualizerBackendUrl}/graphql`,
 })
 
 // link for subscriptions over websockets. Note to self: this is an older subprotocol,
 // which I'm using only because the graphql-dotnet backend library expects it.
 // See here how to use the newer one - https://www.apollographql.com/docs/react/api/link/apollo-link-subscriptions
 const wsLink = new WebSocketLink(
-    new SubscriptionClient('wss://visualizer-backend.mangoplant-a01d49a3.westeurope.azurecontainerapps.io/graphql', {
+    new SubscriptionClient(`wss://${Config.visualizerBackendUrl}/graphql`, {
         reconnect: true,
     })
 )
