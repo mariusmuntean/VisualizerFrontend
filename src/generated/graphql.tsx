@@ -265,6 +265,16 @@ export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; 
 
 export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'StreamingStatusTypeQl', isStreaming?: boolean | null } | null };
 
+export type StartStreamingMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StartStreamingMutation = { __typename?: 'VisualizerMutation', streaming?: { __typename?: 'StreamingMutations', startStreaming?: boolean | null } | null };
+
+export type StopStreamingMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StopStreamingMutation = { __typename?: 'VisualizerMutation', streaming?: { __typename?: 'StreamingMutations', stopStreaming?: boolean | null } | null };
+
 export type GetHashtagsQueryVariables = Exact<{
   amount: Scalars['Int'];
 }>;
@@ -437,6 +447,70 @@ export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionH
       }
 export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
 export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;
+export const StartStreamingDocument = gql`
+    mutation startStreaming {
+  streaming {
+    startStreaming
+  }
+}
+    `;
+export type StartStreamingMutationFn = Apollo.MutationFunction<StartStreamingMutation, StartStreamingMutationVariables>;
+
+/**
+ * __useStartStreamingMutation__
+ *
+ * To run a mutation, you first call `useStartStreamingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStartStreamingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [startStreamingMutation, { data, loading, error }] = useStartStreamingMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStartStreamingMutation(baseOptions?: Apollo.MutationHookOptions<StartStreamingMutation, StartStreamingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StartStreamingMutation, StartStreamingMutationVariables>(StartStreamingDocument, options);
+      }
+export type StartStreamingMutationHookResult = ReturnType<typeof useStartStreamingMutation>;
+export type StartStreamingMutationResult = Apollo.MutationResult<StartStreamingMutation>;
+export type StartStreamingMutationOptions = Apollo.BaseMutationOptions<StartStreamingMutation, StartStreamingMutationVariables>;
+export const StopStreamingDocument = gql`
+    mutation stopStreaming {
+  streaming {
+    stopStreaming
+  }
+}
+    `;
+export type StopStreamingMutationFn = Apollo.MutationFunction<StopStreamingMutation, StopStreamingMutationVariables>;
+
+/**
+ * __useStopStreamingMutation__
+ *
+ * To run a mutation, you first call `useStopStreamingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStopStreamingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [stopStreamingMutation, { data, loading, error }] = useStopStreamingMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStopStreamingMutation(baseOptions?: Apollo.MutationHookOptions<StopStreamingMutation, StopStreamingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StopStreamingMutation, StopStreamingMutationVariables>(StopStreamingDocument, options);
+      }
+export type StopStreamingMutationHookResult = ReturnType<typeof useStopStreamingMutation>;
+export type StopStreamingMutationResult = Apollo.MutationResult<StopStreamingMutation>;
+export type StopStreamingMutationOptions = Apollo.BaseMutationOptions<StopStreamingMutation, StopStreamingMutationVariables>;
 export const GetHashtagsDocument = gql`
     query getHashtags($amount: Int!) {
   hashtag {

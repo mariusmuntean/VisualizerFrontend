@@ -7,3 +7,19 @@ export const IsStreamingChanged = gql`
         }
     }
 `
+
+export const StartStreaming = gql`
+    mutation startStreaming {
+        streaming {
+            startStreaming
+        }
+    }
+`
+
+export const StopStreaming = gql`
+    mutation stopStreaming {
+        streaming {
+            stopStreaming
+        }
+    }
+`
