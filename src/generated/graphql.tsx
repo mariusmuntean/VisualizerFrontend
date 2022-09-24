@@ -75,27 +75,6 @@ export type GraphResultTypeQl = {
   statistics?: Maybe<GraphResultStatisticsTypeQl>;
 };
 
-export type HashtagQuery = {
-  __typename?: 'HashtagQuery';
-  topHashtags?: Maybe<Array<Maybe<HashtagTypeQl>>>;
-};
-
-
-export type HashtagQueryTopHashtagsArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
-};
-
-export type HashtagTypeQl = {
-  __typename?: 'HashtagTypeQl';
-  name?: Maybe<Scalars['String']>;
-  score?: Maybe<Scalars['Decimal']>;
-};
-
-export type IsStreamingStateTypeQl = {
-  __typename?: 'IsStreamingStateTypeQl';
-  isStreaming?: Maybe<Scalars['Boolean']>;
-};
-
 export type MentionFilterInputTypeQl = {
   amount?: InputMaybe<Scalars['Int']>;
   authorUserName?: InputMaybe<Scalars['String']>;
@@ -115,6 +94,23 @@ export type MentionRelationshipTypeQl = {
   relationshipType?: Maybe<MentionRelationshipType>;
   toUserId: Scalars['String'];
   tweetId: Scalars['String'];
+};
+
+export type RankedHashtagQuery = {
+  __typename?: 'RankedHashtagQuery';
+  /** Retrieve a specified amount of the top ranked hashtags */
+  topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>;
+};
+
+
+export type RankedHashtagQueryTopRankedHashtagsArgs = {
+  amount?: InputMaybe<Scalars['Int']>;
+};
+
+export type RankedHashtagTypeQl = {
+  __typename?: 'RankedHashtagTypeQl';
+  name?: Maybe<Scalars['String']>;
+  rank?: Maybe<Scalars['Decimal']>;
 };
 
 export type ReferencedTweetTypeQl = {
@@ -144,6 +140,11 @@ export type StreamingMutations = {
 export type StreamingQuery = {
   __typename?: 'StreamingQuery';
   /** Whether or not the live ingestion is running. */
+  isStreaming?: Maybe<Scalars['Boolean']>;
+};
+
+export type StreamingStatusTypeQl = {
+  __typename?: 'StreamingStatusTypeQl';
   isStreaming?: Maybe<Scalars['Boolean']>;
 };
 
@@ -217,35 +218,42 @@ export type VisualizerMutation = {
 export type VisualizerQuery = {
   __typename?: 'VisualizerQuery';
   graphResult?: Maybe<GraphResultQuery>;
-  hashtag?: Maybe<HashtagQuery>;
+  hashtag?: Maybe<RankedHashtagQuery>;
   streaming?: Maybe<StreamingQuery>;
   tweet?: Maybe<TweetQuery>;
 };
 
 export type VisualizerSubscription = {
   __typename?: 'VisualizerSubscription';
-  hashtagAdded?: Maybe<HashtagTypeQl>;
   /** Produces updates whenever the state of the live ingestion has changed */
-  isStreamingChanged?: Maybe<IsStreamingStateTypeQl>;
-  rankedHashtagsChanged?: Maybe<Array<Maybe<HashtagTypeQl>>>;
+  isStreamingChanged?: Maybe<StreamingStatusTypeQl>;
+  /** Hashtags are published with their new rank */
+  rankedHashtag?: Maybe<RankedHashtagTypeQl>;
+  /** Top X ranked hashtags are published whenever they change */
+  topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>;
 };
 
 
-export type VisualizerSubscriptionRankedHashtagsChangedArgs = {
+export type VisualizerSubscriptionRankedHashtagArgs = {
+  sampleIntervalSec?: InputMaybe<Scalars['Float']>;
+};
+
+
+export type VisualizerSubscriptionTopRankedHashtagsArgs = {
   amount?: InputMaybe<Scalars['Int']>;
 };
 
-export type GetHashtagsQueryVariables = Exact<{
+export type GetTopRankedHashtagsQueryVariables = Exact<{
   amount: Scalars['Int'];
 }>;
 
 
-export type GetHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'HashtagQuery', topHashtags?: Array<{ __typename?: 'HashtagTypeQl', score?: any | null, name?: string | null } | null> | null } | null };
+export type GetTopRankedHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'RankedHashtagQuery', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', rank?: any | null, name?: string | null } | null> | null } | null };
 
-export type HastagAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type RankedHashtagSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HastagAddedSubscription = { __typename?: 'VisualizerSubscription', hashtagAdded?: { __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null };
+export type RankedHashtagSubscription = { __typename?: 'VisualizerSubscription', rankedHashtag?: { __typename?: 'RankedHashtagTypeQl', name?: string | null, rank?: any | null } | null };
 
 export type IsStreamingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -255,14 +263,21 @@ export type IsStreamingQuery = { __typename?: 'VisualizerQuery', streaming?: { _
 export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'IsStreamingStateTypeQl', isStreaming?: boolean | null } | null };
+export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'StreamingStatusTypeQl', isStreaming?: boolean | null } | null };
 
-export type RankedHashtagsChangedSubscriptionVariables = Exact<{
+export type GetHashtagsQueryVariables = Exact<{
+  amount: Scalars['Int'];
+}>;
+
+
+export type GetHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'RankedHashtagQuery', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', rank?: any | null, name?: string | null } | null> | null } | null };
+
+export type TopRankedHashtagsChangedSubscriptionVariables = Exact<{
   amount?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type RankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', rankedHashtagsChanged?: Array<{ __typename?: 'HashtagTypeQl', name?: string | null, score?: any | null } | null> | null };
+export type TopRankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', name?: string | null, rank?: any | null } | null> | null };
 
 export type GetUserCountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -291,11 +306,11 @@ export type GetFilteredTweetsQueryVariables = Exact<{
 export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
-export const GetHashtagsDocument = gql`
-    query getHashtags($amount: Int!) {
+export const GetTopRankedHashtagsDocument = gql`
+    query getTopRankedHashtags($amount: Int!) {
   hashtag {
-    topHashtags(amount: $amount) {
-      score
+    topRankedHashtags(amount: $amount) {
+      rank
       name
     }
   }
@@ -303,62 +318,62 @@ export const GetHashtagsDocument = gql`
     `;
 
 /**
- * __useGetHashtagsQuery__
+ * __useGetTopRankedHashtagsQuery__
  *
- * To run a query within a React component, call `useGetHashtagsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetHashtagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetTopRankedHashtagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTopRankedHashtagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetHashtagsQuery({
+ * const { data, loading, error } = useGetTopRankedHashtagsQuery({
  *   variables: {
  *      amount: // value for 'amount'
  *   },
  * });
  */
-export function useGetHashtagsQuery(baseOptions: Apollo.QueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
+export function useGetTopRankedHashtagsQuery(baseOptions: Apollo.QueryHookOptions<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
+        return Apollo.useQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options);
       }
-export function useGetHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
+export function useGetTopRankedHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
+          return Apollo.useLazyQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options);
         }
-export type GetHashtagsQueryHookResult = ReturnType<typeof useGetHashtagsQuery>;
-export type GetHashtagsLazyQueryHookResult = ReturnType<typeof useGetHashtagsLazyQuery>;
-export type GetHashtagsQueryResult = Apollo.QueryResult<GetHashtagsQuery, GetHashtagsQueryVariables>;
-export const HastagAddedDocument = gql`
-    subscription hastagAdded {
-  hashtagAdded {
+export type GetTopRankedHashtagsQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsQuery>;
+export type GetTopRankedHashtagsLazyQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsLazyQuery>;
+export type GetTopRankedHashtagsQueryResult = Apollo.QueryResult<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>;
+export const RankedHashtagDocument = gql`
+    subscription rankedHashtag {
+  rankedHashtag {
     name
-    score
+    rank
   }
 }
     `;
 
 /**
- * __useHastagAddedSubscription__
+ * __useRankedHashtagSubscription__
  *
- * To run a query within a React component, call `useHastagAddedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useHastagAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useRankedHashtagSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useRankedHashtagSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHastagAddedSubscription({
+ * const { data, loading, error } = useRankedHashtagSubscription({
  *   variables: {
  *   },
  * });
  */
-export function useHastagAddedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<HastagAddedSubscription, HastagAddedSubscriptionVariables>) {
+export function useRankedHashtagSubscription(baseOptions?: Apollo.SubscriptionHookOptions<RankedHashtagSubscription, RankedHashtagSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<HastagAddedSubscription, HastagAddedSubscriptionVariables>(HastagAddedDocument, options);
+        return Apollo.useSubscription<RankedHashtagSubscription, RankedHashtagSubscriptionVariables>(RankedHashtagDocument, options);
       }
-export type HastagAddedSubscriptionHookResult = ReturnType<typeof useHastagAddedSubscription>;
-export type HastagAddedSubscriptionResult = Apollo.SubscriptionResult<HastagAddedSubscription>;
+export type RankedHashtagSubscriptionHookResult = ReturnType<typeof useRankedHashtagSubscription>;
+export type RankedHashtagSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagSubscription>;
 export const IsStreamingDocument = gql`
     query isStreaming {
   streaming {
@@ -422,37 +437,75 @@ export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionH
       }
 export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
 export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;
-export const RankedHashtagsChangedDocument = gql`
-    subscription rankedHashtagsChanged($amount: Int) {
-  rankedHashtagsChanged(amount: $amount) {
-    name
-    score
+export const GetHashtagsDocument = gql`
+    query getHashtags($amount: Int!) {
+  hashtag {
+    topRankedHashtags(amount: $amount) {
+      rank
+      name
+    }
   }
 }
     `;
 
 /**
- * __useRankedHashtagsChangedSubscription__
+ * __useGetHashtagsQuery__
  *
- * To run a query within a React component, call `useRankedHashtagsChangedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useRankedHashtagsChangedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetHashtagsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHashtagsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useRankedHashtagsChangedSubscription({
+ * const { data, loading, error } = useGetHashtagsQuery({
  *   variables: {
  *      amount: // value for 'amount'
  *   },
  * });
  */
-export function useRankedHashtagsChangedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<RankedHashtagsChangedSubscription, RankedHashtagsChangedSubscriptionVariables>) {
+export function useGetHashtagsQuery(baseOptions: Apollo.QueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<RankedHashtagsChangedSubscription, RankedHashtagsChangedSubscriptionVariables>(RankedHashtagsChangedDocument, options);
+        return Apollo.useQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
       }
-export type RankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useRankedHashtagsChangedSubscription>;
-export type RankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagsChangedSubscription>;
+export function useGetHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
+        }
+export type GetHashtagsQueryHookResult = ReturnType<typeof useGetHashtagsQuery>;
+export type GetHashtagsLazyQueryHookResult = ReturnType<typeof useGetHashtagsLazyQuery>;
+export type GetHashtagsQueryResult = Apollo.QueryResult<GetHashtagsQuery, GetHashtagsQueryVariables>;
+export const TopRankedHashtagsChangedDocument = gql`
+    subscription topRankedHashtagsChanged($amount: Int) {
+  topRankedHashtags(amount: $amount) {
+    name
+    rank
+  }
+}
+    `;
+
+/**
+ * __useTopRankedHashtagsChangedSubscription__
+ *
+ * To run a query within a React component, call `useTopRankedHashtagsChangedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useTopRankedHashtagsChangedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTopRankedHashtagsChangedSubscription({
+ *   variables: {
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function useTopRankedHashtagsChangedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<TopRankedHashtagsChangedSubscription, TopRankedHashtagsChangedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<TopRankedHashtagsChangedSubscription, TopRankedHashtagsChangedSubscriptionVariables>(TopRankedHashtagsChangedDocument, options);
+      }
+export type TopRankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useTopRankedHashtagsChangedSubscription>;
+export type TopRankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<TopRankedHashtagsChangedSubscription>;
 export const GetUserCountDocument = gql`
     query getUserCount {
   graphResult {

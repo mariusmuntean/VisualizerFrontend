@@ -1,7 +1,9 @@
 import { ApolloClient, InMemoryCache, split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
-import { WebSocketLink } from '@apollo/client/link/ws'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
+// import { WebSocketLink } from '@apollo/client/link/ws'
+// import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { createClient } from 'graphql-ws'
 
 import { Config } from './../../config'
 
@@ -13,11 +15,16 @@ const httpLink = new HttpLink({
 // link for subscriptions over websockets. Note to self: this is an older subprotocol,
 // which I'm using only because the graphql-dotnet backend library expects it.
 // See here how to use the newer one - https://www.apollographql.com/docs/react/api/link/apollo-link-subscriptions
-const wsLink = new WebSocketLink(
-    new SubscriptionClient(`wss://${Config.visualizerBackendUrl}/graphql`, {
-        reconnect: true,
-    })
-)
+// const wsLink = new WebSocketLink(
+//     new SubscriptionClient(`wss://${Config.visualizerBackendUrl}/graphql`, {
+//         reconnect: true,
+//     })
+// )
+
+// link for subscriptions over websockets. Note to self: this is an older subprotocol,
+// which I'm using only because the graphql-dotnet backend library expects it.
+// See here how to use the newer one - https://www.apollographql.com/docs/react/api/link/apollo-link-subscriptions
+const wsLink = new GraphQLWsLink(createClient({ url: `wss://${Config.visualizerBackendUrl}/graphql` }))
 
 // The split function takes three parameters:
 //

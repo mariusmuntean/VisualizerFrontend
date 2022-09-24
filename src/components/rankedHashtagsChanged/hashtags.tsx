@@ -15,12 +15,12 @@ export const Hashtags = () => {
     const wordCloudData = useMemo(() => {
         console.log(data)
         return (
-            data?.hashtag?.topHashtags?.map((h) => {
-                const w: Word = { text: h?.name!, value: h?.score }
+            data?.hashtag?.topRankedHashtags?.map((h) => {
+                const w: Word = { text: h?.name!, value: h?.rank }
                 return w
             }) ?? []
         )
-    }, [data?.hashtag?.topHashtags])
+    }, [data?.hashtag?.topRankedHashtags])
 
     if (loading) {
         return <Spin size="default"></Spin>

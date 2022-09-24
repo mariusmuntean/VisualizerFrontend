@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'
 
-export const GetHashtags = gql`
-    query getHashtags($amount: Int!) {
+export const GetTopRankedHashtags = gql`
+    query getTopRankedHashtags($amount: Int!) {
         hashtag {
-            topHashtags(amount: $amount) {
-                score
+            topRankedHashtags(amount: $amount) {
+                rank
                 name
             }
         }

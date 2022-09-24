@@ -3,13 +3,13 @@ import { Button, Col, Input, notification, Row, Space, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
 import { debounce, toNumber } from 'lodash'
 
-import { useGetHashtagsQuery, useRankedHashtagsChangedSubscription } from '../../generated/graphql'
+import { useGetHashtagsQuery, useTopRankedHashtagsChangedSubscription } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
 
 export const LiveRankedHashtags = () => {
     const [topHashtagAmount, setTopHashtagAmount] = useState<number>(50)
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
-    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useRankedHashtagsChangedSubscription({ variables: { amount: topHashtagAmount } })
+    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useTopRankedHashtagsChangedSubscription({ variables: { amount: topHashtagAmount } })
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
@@ -26,13 +26,13 @@ export const LiveRankedHashtags = () => {
 
         // map hashtags to Word[]
         let words =
-            hashtagsData?.hashtag?.topHashtags?.map((h) => {
-                const w: Word = { text: h?.name!, value: h?.score }
+            hashtagsData?.hashtag?.topRankedHashtags?.map((h) => {
+                const w: Word = { text: h?.name!, value: h?.rank }
                 return w
             }) ?? []
 
         setWordCloudData(words)
-    }, [hashtagsData?.hashtag?.topHashtags])
+    }, [hashtagsData?.hashtag?.topRankedHashtags])
 
     useEffect(() => {
         if (loadingHashtags || loadingRankedHashtagsChanged || wordCloudData.length < 1) {
@@ -41,13 +41,13 @@ export const LiveRankedHashtags = () => {
 
         // map hashtags to Word[]
         const newWords: Word[] =
-            rankedHashtagsChanged?.rankedHashtagsChanged?.map((rh) => ({
+            rankedHashtagsChanged?.topRankedHashtags?.map((rh) => ({
                 text: rh?.name!,
-                value: rh?.score,
+                value: rh?.rank,
             })) ?? []
         setWordCloudData([...newWords])
         console.log(new Date().toTimeString())
-    }, [rankedHashtagsChanged?.rankedHashtagsChanged])
+    }, [rankedHashtagsChanged?.topRankedHashtags])
 
     if (loadingHashtags) {
         return <Spin size="default"></Spin>

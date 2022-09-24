@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'
 
-export const HashtagSubscription = gql`
-    subscription hastagAdded {
-        hashtagAdded {
+export const RankedHashtagSubscription = gql`
+    subscription rankedHashtag {
+        rankedHashtag {
             name
-            score
+            rank
         }
     }
 `

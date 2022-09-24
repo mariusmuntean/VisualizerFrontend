@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
-import { useGetHashtagsQuery, useHastagAddedSubscription } from '../../generated/graphql'
+import { useGetHashtagsQuery, useRankedHashtagSubscription } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
 
 interface Word {
@@ -13,7 +13,7 @@ interface Word {
 export const LiveHashtagAdded = () => {
     const [topHashtagAmount, setTopHashtagAmount] = useState(50)
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
-    const { loading: loadingHashtagAdded, data: hashtagAddedData } = useHastagAddedSubscription()
+    const { loading: loadingHashtagAdded, data: hashtagAddedData } = useRankedHashtagSubscription()
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
@@ -28,13 +28,13 @@ export const LiveHashtagAdded = () => {
 
         // map hashtags to Word[]
         let words =
-            hashtagsData?.hashtag?.topHashtags?.map((h) => {
-                const w: Word = { text: h?.name!, value: h?.score }
+            hashtagsData?.hashtag?.topRankedHashtags?.map((h) => {
+                const w: Word = { text: h?.name!, value: h?.rank }
                 return w
             }) ?? []
 
         setWordCloudData(words)
-    }, [hashtagsData?.hashtag?.topHashtags])
+    }, [hashtagsData?.hashtag?.topRankedHashtags])
 
     useEffect(() => {
         if (loadingHashtags || loadingHashtagAdded || wordCloudData.length < 1) {
@@ -45,21 +45,21 @@ export const LiveHashtagAdded = () => {
         let words = wordCloudData
 
         // Add new hashtags to the Word[]
-        const newHashtag = hashtagAddedData?.hashtagAdded
+        const newHashtag = hashtagAddedData?.rankedHashtag
         if (!newHashtag) {
             return
         }
         const newHashtagIndex = words.findIndex((w) => w.text === newHashtag?.name)
         if (newHashtagIndex === -1) {
-            words = [...words, { text: newHashtag.name!, value: newHashtag.score }]
+            words = [...words, { text: newHashtag.name!, value: newHashtag.rank }]
         } else {
             const currentWord = words[newHashtagIndex]
-            currentWord.value = newHashtag.score
+            currentWord.value = newHashtag.rank
             words[newHashtagIndex] = currentWord
         }
 
         setWordCloudData([...words])
-    }, [hashtagAddedData?.hashtagAdded?.name, hashtagAddedData?.hashtagAdded?.score])
+    }, [hashtagAddedData?.rankedHashtag?.name, hashtagAddedData?.rankedHashtag?.rank])
 
     if (loadingHashtags) {
         return <Spin size="default"></Spin>
