@@ -13,7 +13,12 @@ const httpLink = new HttpLink({
 // link for subscriptions over websockets. Note to self: this is an older subprotocol,
 // which I'm using only because the graphql-dotnet backend library expects it.
 // See here how to use the newer one - https://www.apollographql.com/docs/react/api/link/apollo-link-subscriptions
-const wsLink = new GraphQLWsLink(createClient({ url: `wss://${Config.visualizerBackendUrl}/graphql` }))
+const wsLink = new GraphQLWsLink(
+    createClient({
+        url: `wss://${Config.visualizerBackendUrl}/graphql`,
+        shouldRetry: (errOrCloseEvent) => true,
+    })
+)
 
 // The split function takes three parameters:
 //
@@ -32,4 +37,5 @@ const splitLink = split(
 export const client = new ApolloClient({
     link: splitLink,
     cache: new InMemoryCache(),
+    connectToDevTools: true,
 })

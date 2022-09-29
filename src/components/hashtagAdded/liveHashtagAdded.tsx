@@ -13,13 +13,9 @@ interface Word {
 export const LiveHashtagAdded = () => {
     const [topHashtagAmount, setTopHashtagAmount] = useState(50)
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
-    const { loading: loadingHashtagAdded, data: hashtagAddedData } = useRankedHashtagSubscription()
+    const { loading: loadingHashtagAdded, data: hashtagAddedData } = useRankedHashtagSubscription({ fetchPolicy: 'network-only' })
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
-
-    // ToDo: add buttons to start and stop streamming
-    // ToDo: show ranked list of hashtag names and scores
-    // ToDo: throttle the updates somehow. The wordcloud is to active.
 
     useEffect(() => {
         if (loadingHashtags) {
@@ -37,7 +33,7 @@ export const LiveHashtagAdded = () => {
     }, [hashtagsData?.hashtag?.topRankedHashtags])
 
     useEffect(() => {
-        if (loadingHashtags || loadingHashtagAdded || wordCloudData.length < 1) {
+        if (loadingHashtags || loadingHashtagAdded) {
             return
         }
 

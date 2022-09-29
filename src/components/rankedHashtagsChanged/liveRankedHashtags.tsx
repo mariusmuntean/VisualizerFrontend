@@ -9,7 +9,10 @@ import { ColumnType } from 'antd/lib/table'
 export const LiveRankedHashtags = () => {
     const [topHashtagAmount, setTopHashtagAmount] = useState<number>(50)
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
-    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useTopRankedHashtagsChangedSubscription({ variables: { amount: topHashtagAmount } })
+    const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useTopRankedHashtagsChangedSubscription({
+        variables: { amount: topHashtagAmount },
+        fetchPolicy: 'network-only',
+    })
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
@@ -35,7 +38,7 @@ export const LiveRankedHashtags = () => {
     }, [hashtagsData?.hashtag?.topRankedHashtags])
 
     useEffect(() => {
-        if (loadingHashtags || loadingRankedHashtagsChanged || wordCloudData.length < 1) {
+        if (loadingHashtags || loadingRankedHashtagsChanged) {
             return
         }
 
