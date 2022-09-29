@@ -115,10 +115,37 @@ export const Tweets = () => {
                 return (
                     <Space wrap>
                         {record.entities?.mentions?.map((mention) => (
-                            <Tag key={mention?.username}>{mention?.username}</Tag>
+                            <Tag key={mention}>{mention}</Tag>
                         ))}
                     </Space>
                 )
+            },
+        },
+        {
+            title: 'Likes',
+            dataIndex: 'publicMetrics.likeCount',
+            sorter: true,
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record) => {
+                return record.publicMetricsLikeCount
+            },
+        },
+        {
+            title: 'Retweets',
+            dataIndex: 'publicMetrics.retweetCount',
+            sorter: true,
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record) => {
+                return record.publicMetricsRetweetCount
+            },
+        },
+        {
+            title: 'Replies',
+            dataIndex: 'publicMetrics.replyCount',
+            sorter: true,
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record) => {
+                return record.publicMetricsReplyCount
             },
         },
         {
@@ -225,7 +252,30 @@ export const Tweets = () => {
                             }
                             if ('field' in sorter && sorter.field) {
                                 console.log(sorter.field)
-                                setSortField(sorter.field === 'username' ? SortField.Username : SortField.CreatedAt)
+                                let sortField: SortField = SortField.CreatedAt
+                                switch (sorter.field) {
+                                    case 'username': {
+                                        sortField = SortField.Username
+                                        break
+                                    }
+                                    case 'createdAt': {
+                                        sortField = SortField.CreatedAt
+                                        break
+                                    }
+                                    case 'publicMetrics.likeCount': {
+                                        sortField = SortField.PublicMetricsLikesCount
+                                        break
+                                    }
+                                    case 'publicMetrics.retweetCount': {
+                                        sortField = SortField.PublicMetricsRetweetsCount
+                                        break
+                                    }
+                                    case 'publicMetrics.replyCount': {
+                                        sortField = SortField.PublicMetricsRepliesCount
+                                        break
+                                    }
+                                }
+                                setSortField(sortField)
                             }
                         }}
                         pagination={{

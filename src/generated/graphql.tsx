@@ -121,6 +121,9 @@ export type ReferencedTweetTypeQl = {
 
 export enum SortField {
   CreatedAt = 'CREATED_AT',
+  PublicMetricsLikesCount = 'PUBLIC_METRICS_LIKES_COUNT',
+  PublicMetricsRepliesCount = 'PUBLIC_METRICS_REPLIES_COUNT',
+  PublicMetricsRetweetsCount = 'PUBLIC_METRICS_RETWEETS_COUNT',
   Username = 'USERNAME'
 }
 
@@ -152,7 +155,7 @@ export type TweetEntitiesTypeQl = {
   __typename?: 'TweetEntitiesTypeQl';
   cashtags?: Maybe<Array<Maybe<CashtagEntityTypeQl>>>;
   hashtags?: Maybe<Array<Maybe<Scalars['String']>>>;
-  mentions?: Maybe<Array<Maybe<UserMentionTypeQl>>>;
+  mentions?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type TweetMetricsTypeQl = {
@@ -191,16 +194,12 @@ export type TweetTypeQl = {
   id?: Maybe<Scalars['String']>;
   lang?: Maybe<Scalars['String']>;
   organicMetrics?: Maybe<TweetMetricsTypeQl>;
+  publicMetricsLikeCount?: Maybe<Scalars['Int']>;
+  publicMetricsReplyCount?: Maybe<Scalars['Int']>;
+  publicMetricsRetweetCount?: Maybe<Scalars['Int']>;
   referencedTweets?: Maybe<Array<Maybe<ReferencedTweetTypeQl>>>;
   source?: Maybe<Scalars['String']>;
   text?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-};
-
-export type UserMentionTypeQl = {
-  __typename?: 'UserMentionTypeQl';
-  end?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
   username?: Maybe<Scalars['String']>;
 };
 
@@ -313,7 +312,7 @@ export type GetFilteredTweetsQueryVariables = Exact<{
 }>;
 
 
-export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null } | null } | null> | null } | null } | null };
+export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
 export const GetTopRankedHashtagsDocument = gql`
@@ -729,7 +728,11 @@ export const GetFilteredTweetsDocument = gql`
         }
         entities {
           hashtags
+          mentions
         }
+        publicMetricsLikeCount
+        publicMetricsRetweetCount
+        publicMetricsReplyCount
       }
     }
   }

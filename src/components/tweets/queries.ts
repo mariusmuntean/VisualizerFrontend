@@ -20,7 +20,11 @@ export const getFilteredTweets = gql`
                     }
                     entities {
                         hashtags
+                        mentions
                     }
+                    publicMetricsLikeCount
+                    publicMetricsRetweetCount
+                    publicMetricsReplyCount
                 }
             }
         }
