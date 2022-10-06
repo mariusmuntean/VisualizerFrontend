@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, DatePicker, Select, Tag, Space, Card, Table } from 'antd'
+import { Row, Col, Input, DatePicker, Select, Tag, Space, Card, Table, Checkbox, Switch } from 'antd'
 import moment from 'moment'
 const { Option } = Select
 
@@ -13,6 +13,8 @@ export const Tweets = () => {
     const [username, setUsername] = useState<string | undefined>(undefined)
     const [tweetId, setTweetId] = useState<string | undefined>(undefined)
     const [searchText, setSearchText] = useState<string | undefined>(undefined)
+    const [filterGeo, setFilterGeo] = useState<boolean>(false)
+    const [withGeo, setWithGeo] = useState<boolean | undefined>(undefined)
     const [hashtags, setHashtags] = useState<string[] | undefined>(undefined)
 
     const [startingFrom, setStartingFrom] = useState<Date | undefined>(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7))
@@ -34,6 +36,7 @@ export const Tweets = () => {
                 username: username,
                 tweetId: tweetId,
                 searchTerm: searchText,
+                onlyWithGeo: filterGeo ? withGeo : undefined,
                 hashtags: hashtags,
                 startingFrom: startingFrom,
                 upTo: upTo,
@@ -53,6 +56,7 @@ export const Tweets = () => {
                     username: username,
                     tweetId: tweetId,
                     searchTerm: searchText,
+                    onlyWithGeo: filterGeo ? withGeo : undefined,
                     hashtags: hashtags,
                     startingFrom: startingFrom,
                     upTo: upTo,
@@ -63,7 +67,7 @@ export const Tweets = () => {
                 },
             },
         })
-    }, [authorId, username, tweetId, searchText, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, fetchMore])
+    }, [authorId, username, tweetId, searchText, withGeo, filterGeo, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, fetchMore])
 
     const onCurrentHashtagConfirmed = () => {
         if (currentHashtag && (!hashtags || hashtags?.indexOf(currentHashtag) === -1)) {
@@ -149,6 +153,14 @@ export const Tweets = () => {
             },
         },
         {
+            title: 'Geo',
+            dataIndex: 'geoLoc',
+            width: '5%',
+            render: (text, record) => {
+                return `(${record.geoLoc?.latitude}, ${record.geoLoc?.latitude})`
+            },
+        },
+        {
             title: 'Created At',
             dataIndex: 'createdAt',
             sortDirections: ['descend', 'ascend'],
@@ -202,6 +214,27 @@ export const Tweets = () => {
                                                 }}
                                                 style={{ width: '100%' }}
                                             />{' '}
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Space>
+                            <Space>
+                                <Card title="Geo" size="small">
+                                    <Row>
+                                        <Col>
+                                            <Switch
+                                                checkedChildren="Filter Geo"
+                                                unCheckedChildren="Ignore Geo"
+                                                checked={filterGeo}
+                                                onChange={(checked, e) => {
+                                                    setFilterGeo(checked)
+                                                }}
+                                            ></Switch>
+                                        </Col>
+                                        <Col>
+                                            <Checkbox name="WithGeo" disabled={!filterGeo} checked={withGeo} onChange={(e) => setWithGeo(e.target.checked)}>
+                                                With Geo?
+                                            </Checkbox>
                                         </Col>
                                     </Row>
                                 </Card>

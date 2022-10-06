@@ -9,6 +9,7 @@ import { useIsStreaming } from './components/hooks/useIsStreamingHook'
 import { Social } from './components/social/social'
 import { Tweets } from './components/tweets'
 import { useStartStreamingMutation, useStopStreamingMutation } from './generated/graphql'
+import { Geo } from './components/geo'
 
 const { TabPane } = Tabs
 
@@ -47,6 +48,9 @@ function App() {
                         </TabPane>
                         <TabPane tab="Social Graph" key="4">
                             <Social></Social>
+                        </TabPane>
+                        <TabPane tab="Geo" key="5">
+                            <Geo />
                         </TabPane>
                     </Tabs>
                 </Col>

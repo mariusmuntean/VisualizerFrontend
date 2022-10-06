@@ -29,6 +29,7 @@ export type CashtagEntityTypeQl = {
 export type FindTweetsInputTypeQl = {
   authorId?: InputMaybe<Scalars['String']>;
   hashtags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  onlyWithGeo?: InputMaybe<Scalars['Boolean']>;
   pageNumber?: InputMaybe<Scalars['Int']>;
   pageSize?: InputMaybe<Scalars['Int']>;
   searchTerm?: InputMaybe<Scalars['String']>;
@@ -242,6 +243,13 @@ export type VisualizerSubscriptionTopRankedHashtagsArgs = {
   amount?: InputMaybe<Scalars['Int']>;
 };
 
+export type GetTweetsQueryVariables = Exact<{
+  filter: FindTweetsInputTypeQl;
+}>;
+
+
+export type GetTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
+
 export type GetTopRankedHashtagsQueryVariables = Exact<{
   amount: Scalars['Int'];
 }>;
@@ -315,6 +323,64 @@ export type GetFilteredTweetsQueryVariables = Exact<{
 export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
+export const GetTweetsDocument = gql`
+    query getTweets($filter: FindTweetsInputTypeQl!) {
+  tweet {
+    find(filter: $filter) {
+      total
+      tweets {
+        id
+        authorId
+        username
+        conversationId
+        lang
+        source
+        text
+        createdAt
+        geoLoc {
+          latitude
+          longitude
+        }
+        entities {
+          hashtags
+          mentions
+        }
+        publicMetricsLikeCount
+        publicMetricsRetweetCount
+        publicMetricsReplyCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTweetsQuery__
+ *
+ * To run a query within a React component, call `useGetTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTweetsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetTweetsQuery(baseOptions: Apollo.QueryHookOptions<GetTweetsQuery, GetTweetsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTweetsQuery, GetTweetsQueryVariables>(GetTweetsDocument, options);
+      }
+export function useGetTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTweetsQuery, GetTweetsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTweetsQuery, GetTweetsQueryVariables>(GetTweetsDocument, options);
+        }
+export type GetTweetsQueryHookResult = ReturnType<typeof useGetTweetsQuery>;
+export type GetTweetsLazyQueryHookResult = ReturnType<typeof useGetTweetsLazyQuery>;
+export type GetTweetsQueryResult = Apollo.QueryResult<GetTweetsQuery, GetTweetsQueryVariables>;
 export const GetTopRankedHashtagsDocument = gql`
     query getTopRankedHashtags($amount: Int!) {
   hashtag {
