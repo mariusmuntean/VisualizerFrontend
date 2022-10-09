@@ -267,6 +267,13 @@ export type IsStreamingQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type IsStreamingQuery = { __typename?: 'VisualizerQuery', streaming?: { __typename?: 'StreamingQuery', isStreaming?: boolean | null } | null };
 
+export type GetFilteredTweetsQueryVariables = Exact<{
+  filter: FindTweetsInputTypeQl;
+}>;
+
+
+export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
+
 export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -314,13 +321,6 @@ export type GetMentionsQueryVariables = Exact<{
 
 
 export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null, statistics?: { __typename?: 'GraphResultStatisticsTypeQl', queryInternalExecutionTime?: string | null } | null } | null } | null };
-
-export type GetFilteredTweetsQueryVariables = Exact<{
-  filter: FindTweetsInputTypeQl;
-}>;
-
-
-export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
 
 
 export const GetTweetsDocument = gql`
@@ -483,6 +483,64 @@ export function useIsStreamingLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type IsStreamingQueryHookResult = ReturnType<typeof useIsStreamingQuery>;
 export type IsStreamingLazyQueryHookResult = ReturnType<typeof useIsStreamingLazyQuery>;
 export type IsStreamingQueryResult = Apollo.QueryResult<IsStreamingQuery, IsStreamingQueryVariables>;
+export const GetFilteredTweetsDocument = gql`
+    query getFilteredTweets($filter: FindTweetsInputTypeQl!) {
+  tweet {
+    find(filter: $filter) {
+      total
+      tweets {
+        id
+        authorId
+        username
+        conversationId
+        lang
+        source
+        text
+        createdAt
+        geoLoc {
+          latitude
+          longitude
+        }
+        entities {
+          hashtags
+          mentions
+        }
+        publicMetricsLikeCount
+        publicMetricsRetweetCount
+        publicMetricsReplyCount
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFilteredTweetsQuery__
+ *
+ * To run a query within a React component, call `useGetFilteredTweetsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFilteredTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFilteredTweetsQuery({
+ *   variables: {
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useGetFilteredTweetsQuery(baseOptions: Apollo.QueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
+      }
+export function useGetFilteredTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
+        }
+export type GetFilteredTweetsQueryHookResult = ReturnType<typeof useGetFilteredTweetsQuery>;
+export type GetFilteredTweetsLazyQueryHookResult = ReturnType<typeof useGetFilteredTweetsLazyQuery>;
+export type GetFilteredTweetsQueryResult = Apollo.QueryResult<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>;
 export const IsStreamingSubDocument = gql`
     subscription isStreamingSub {
   isStreamingChanged {
@@ -774,61 +832,3 @@ export function useGetMentionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetMentionsQueryHookResult = ReturnType<typeof useGetMentionsQuery>;
 export type GetMentionsLazyQueryHookResult = ReturnType<typeof useGetMentionsLazyQuery>;
 export type GetMentionsQueryResult = Apollo.QueryResult<GetMentionsQuery, GetMentionsQueryVariables>;
-export const GetFilteredTweetsDocument = gql`
-    query getFilteredTweets($filter: FindTweetsInputTypeQl!) {
-  tweet {
-    find(filter: $filter) {
-      total
-      tweets {
-        id
-        authorId
-        username
-        conversationId
-        lang
-        source
-        text
-        createdAt
-        geoLoc {
-          latitude
-          longitude
-        }
-        entities {
-          hashtags
-          mentions
-        }
-        publicMetricsLikeCount
-        publicMetricsRetweetCount
-        publicMetricsReplyCount
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useGetFilteredTweetsQuery__
- *
- * To run a query within a React component, call `useGetFilteredTweetsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetFilteredTweetsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetFilteredTweetsQuery({
- *   variables: {
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useGetFilteredTweetsQuery(baseOptions: Apollo.QueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
-      }
-export function useGetFilteredTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
-        }
-export type GetFilteredTweetsQueryHookResult = ReturnType<typeof useGetFilteredTweetsQuery>;
-export type GetFilteredTweetsLazyQueryHookResult = ReturnType<typeof useGetFilteredTweetsLazyQuery>;
-export type GetFilteredTweetsQueryResult = Apollo.QueryResult<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>;

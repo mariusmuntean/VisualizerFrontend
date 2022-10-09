@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, DatePicker, Select, Tag, Space, Card, Table, Checkbox, Switch } from 'antd'
+import { Row, Col, Input, DatePicker, Tag, Space, Card, Table, Checkbox, Switch } from 'antd'
 import moment from 'moment'
-const { Option } = Select
 
-import { SortField, SortOrder, TweetTypeQl, useGetFilteredTweetsQuery } from '../../generated/graphql'
+import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
 import { SorterResult } from 'antd/lib/table/interface'
+import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 
 export const Tweets = () => {
     const [authorId, setAuthorId] = useState<string | undefined>(undefined)
@@ -29,45 +29,20 @@ export const Tweets = () => {
     const [showAddHashtag, setShowAddHashtag] = useState(false)
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
 
-    const { data, loading, error, fetchMore } = useGetFilteredTweetsQuery({
-        variables: {
-            filter: {
-                authorId: authorId,
-                username: username,
-                tweetId: tweetId,
-                searchTerm: searchText,
-                onlyWithGeo: filterGeo ? withGeo : undefined,
-                hashtags: hashtags,
-                startingFrom: startingFrom,
-                upTo: upTo,
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                sortField: sortField,
-                sortOrder: sortOrder,
-            },
-        },
+    const { data, loading } = useGetFilteredTweetsHook({
+        authorId: authorId,
+        username: username,
+        tweetId: tweetId,
+        searchTerm: searchText,
+        onlyWithGeo: filterGeo ? withGeo : undefined,
+        hashtags: hashtags,
+        startingFrom: startingFrom,
+        upTo: upTo,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        sortField: sortField,
+        sortOrder: sortOrder,
     })
-
-    useEffect(() => {
-        fetchMore({
-            variables: {
-                filter: {
-                    authorId: authorId,
-                    username: username,
-                    tweetId: tweetId,
-                    searchTerm: searchText,
-                    onlyWithGeo: filterGeo ? withGeo : undefined,
-                    hashtags: hashtags,
-                    startingFrom: startingFrom,
-                    upTo: upTo,
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortField: sortField,
-                    sortOrder: sortOrder,
-                },
-            },
-        })
-    }, [authorId, username, tweetId, searchText, withGeo, filterGeo, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, fetchMore])
 
     const onCurrentHashtagConfirmed = () => {
         if (currentHashtag && (!hashtags || hashtags?.indexOf(currentHashtag) === -1)) {
