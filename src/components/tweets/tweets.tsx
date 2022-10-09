@@ -172,7 +172,7 @@ export const Tweets = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
             <Row wrap justify="center" align="stretch" gutter={[8, 8]}>
-                <Col span={16}>
+                <Col span={20}>
                     <Card title="Filter" size="small">
                         <Space wrap size="small">
                             <Space direction="vertical">
@@ -242,7 +242,7 @@ export const Tweets = () => {
                         </Space>
                     </Card>
                 </Col>
-                <Col span={8}>
+                <Col span={4}>
                     <Card title="Hashtags" size="small">
                         <div>
                             {hashtags?.map((h) => (
