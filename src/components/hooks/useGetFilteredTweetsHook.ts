@@ -1,7 +1,21 @@
 import { useEffect } from 'react'
 import { FindTweetsInputTypeQl, useGetFilteredTweetsQuery } from '../../generated/graphql'
 
-export const useGetFilteredTweetsHook = ({ authorId, username, tweetId, searchTerm, onlyWithGeo, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder }: FindTweetsInputTypeQl) => {
+export const useGetFilteredTweetsHook = ({
+    authorId,
+    username,
+    tweetId,
+    searchTerm,
+    onlyWithGeo,
+    geoFilter,
+    hashtags,
+    startingFrom,
+    upTo,
+    pageSize,
+    pageNumber,
+    sortField,
+    sortOrder,
+}: FindTweetsInputTypeQl) => {
     const queryResult = useGetFilteredTweetsQuery({
         variables: {
             filter: {
@@ -10,6 +24,7 @@ export const useGetFilteredTweetsHook = ({ authorId, username, tweetId, searchTe
                 tweetId: tweetId,
                 searchTerm: searchTerm,
                 onlyWithGeo: onlyWithGeo,
+                geoFilter: geoFilter,
                 hashtags: hashtags,
                 startingFrom: startingFrom,
                 upTo: upTo,
@@ -30,6 +45,7 @@ export const useGetFilteredTweetsHook = ({ authorId, username, tweetId, searchTe
                     tweetId: tweetId,
                     searchTerm: searchTerm,
                     onlyWithGeo: onlyWithGeo,
+                    geoFilter: geoFilter,
                     hashtags: hashtags,
                     startingFrom: startingFrom,
                     upTo: upTo,
@@ -40,7 +56,7 @@ export const useGetFilteredTweetsHook = ({ authorId, username, tweetId, searchTe
                 },
             },
         })
-    }, [authorId, username, tweetId, searchTerm, onlyWithGeo, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, queryResult.fetchMore])
+    }, [authorId, username, tweetId, searchTerm, onlyWithGeo, geoFilter, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, queryResult.fetchMore])
 
     return queryResult
 }

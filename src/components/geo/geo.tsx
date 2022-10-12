@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { LatLng, LatLngExpression, LatLngLiteral } from 'leaflet'
+import { LatLng, LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet'
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent, useMapEvents } from 'react-leaflet'
 import { Tweet } from 'react-twitter-widgets'
+import { Col, Input, Row, Select, Space } from 'antd'
+const { Option } = Select
 
 import { GeoLocTypeQl, SortField, SortOrder, useGetTweetsQuery } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
@@ -54,12 +56,16 @@ export const Geo = () => {
     const [showAddHashtag, setShowAddHashtag] = useState(false)
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
 
+    const [geoLocation, setGeoLocation] = useState<LatLngTuple>([49, 12])
+    const [radiusKm, setRadiusKm] = useState<number>(5)
+
     const { data, loading } = useGetFilteredTweetsHook({
         authorId: authorId,
         username: username,
         tweetId: tweetId,
         searchTerm: searchText,
         onlyWithGeo: true,
+        geoFilter: { latitude: geoLocation[0], longitude: geoLocation[1], radiusKm: radiusKm },
         hashtags: hashtags,
         startingFrom: startingFrom,
         upTo: upTo,
@@ -71,12 +77,28 @@ export const Geo = () => {
 
     const tweetsWithGeo = data?.tweet?.find?.tweets?.filter((t) => t?.geoLoc)
 
+    // ToDo: click on map and draw circle with 5KM radius. Let user change radius. Use that as a search filter.
+
     return (
-        <div id="map" style={{ width: '100%', height: '100%' }}>
-            <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={true} style={{ height: '100vh' }}>
-                <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {tweetsWithGeo && tweetsWithGeo.map((t) => <TweetLocationMarker key={t?.id} tweetId={t?.id!} latitude={t?.geoLoc?.latitude!} longitude={t?.geoLoc?.longitude!} />)}
-            </MapContainer>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
+            <Row>
+                <Col>
+                    <Space>
+                        <Input addonBefore="Latitude" defaultValue={0} value={geoLocation?.[0]} onChange={(e) => setGeoLocation([Number(e.target.value), geoLocation[1]])}></Input>
+                        <Input addonBefore="Longitude" defaultValue={0} value={geoLocation?.[1]} onChange={(e) => setGeoLocation([geoLocation[0], Number(e.target.value)])}></Input>
+                        <Input addonBefore="Radius" defaultValue={0} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))}></Input>
+                    </Space>
+                </Col>
+                <Col>{/* <Select showSearch placeholder={'Munich, Germany'} onSearch={onSearch}></Select> */}</Col>
+            </Row>
+            <Row>
+                <div id="map" style={{ width: '100%', height: '100%' }}>
+                    <MapContainer center={geoLocation} zoom={13} scrollWheelZoom={true} style={{ height: '100vh' }}>
+                        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        {tweetsWithGeo && tweetsWithGeo.map((t) => <TweetLocationMarker key={t?.id} tweetId={t?.id!} latitude={t?.geoLoc?.latitude!} longitude={t?.geoLoc?.longitude!} />)}
+                    </MapContainer>
+                </div>
+            </Row>
         </div>
     )
 }
