@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
-import { LatLngTuple } from 'leaflet'
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { LatLng, LatLngTuple, LeafletMouseEvent, LeafletMouseEventHandlerFn, Map } from 'leaflet'
+import { Circle, CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet'
 import { Tweet } from 'react-twitter-widgets'
-import { Button, Col, Divider, Input, Row, Select, Space, Tooltip } from 'antd'
+import { Button, Col, Divider, Input, InputNumber, Row, Select, Space, Tooltip } from 'antd'
 const { Option } = Select
-import { AimOutlined } from '@ant-design/icons'
+import { AimOutlined, EnvironmentOutlined } from '@ant-design/icons'
 
 import { GeoLocTypeQl, SortField, SortOrder } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
@@ -14,6 +14,11 @@ const CenterMap = ({ center }: { center: LatLngTuple }) => {
 
     map.setView(center, map.getZoom(), { animate: true, duration: 1 })
 
+    return null
+}
+
+const CircularAreaSelector = ({ clickHandler }: { clickHandler: LeafletMouseEventHandlerFn }) => {
+    useMapEvent('click', clickHandler)
     return null
 }
 
@@ -29,6 +34,8 @@ const TweetLocationMarker = ({ tweetId, latitude, longitude }: GeoLocTypeQl & { 
 }
 
 export const Geo = () => {
+    const mapRef = useRef<Map | undefined>(undefined)
+
     const [authorId, setAuthorId] = useState<string | undefined>(undefined)
     const [username, setUsername] = useState<string | undefined>(undefined)
     const [tweetId, setTweetId] = useState<string | undefined>(undefined)
@@ -48,7 +55,20 @@ export const Geo = () => {
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
 
     const [geoLocation, setGeoLocation] = useState<LatLngTuple>([50, 12])
-    const [radiusKm, setRadiusKm] = useState<number>(5)
+    const [radiusKm, setRadiusKm] = useState<number>(300)
+    const radiusPx = useMemo(() => {
+        if (!mapRef?.current) {
+            return 0
+        }
+
+        const ne = mapRef.current.getBounds().getNorthEast()
+        const se = mapRef.current.getBounds().getSouthEast()
+        const heightInMeters = ne.distanceTo(se)
+        var heightInPixels = mapRef.current.getSize().y
+
+        var pixelsPerMeter = heightInPixels / heightInMeters
+        return radiusKm * 1000 * pixelsPerMeter
+    }, [radiusKm])
     const [locating, setLocating] = useState<boolean>(false)
 
     const { data, loading } = useGetFilteredTweetsHook({
@@ -86,6 +106,10 @@ export const Geo = () => {
         }
     }, [setGeoLocation])
 
+    const ch: LeafletMouseEventHandlerFn = (event: LeafletMouseEvent) => {
+        setGeoLocation([event.latlng.lat, event.latlng.lng])
+    }
+
     const tweetsWithGeo = data?.tweet?.find?.tweets?.filter((t) => t?.geoLoc)
 
     // ToDo: click on map and draw circle with 5KM radius. Let user change radius. Use that as a search filter.
@@ -97,10 +121,10 @@ export const Geo = () => {
                     <Space>
                         <Input addonBefore="Latitude" defaultValue={0} value={geoLocation?.[0]} onChange={(e) => setGeoLocation([Number(e.target.value), geoLocation[1]])}></Input>
                         <Input addonBefore="Longitude" defaultValue={0} value={geoLocation?.[1]} onChange={(e) => setGeoLocation([geoLocation[0], Number(e.target.value)])}></Input>
-                        <Input addonBefore="Radius" defaultValue={0} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))}></Input>
+                        <InputNumber addonBefore="Radius" addonAfter="KM" defaultValue={0} value={radiusKm} type="numeric" onChange={(e) => setRadiusKm(e)}></InputNumber>
                         <Divider type="vertical"></Divider>
                         <Tooltip title="Click center at my location">
-                            <Button loading={locating} icon={<AimOutlined />} onClick={() => tryCenterAtCurrentLocation()}></Button>
+                            <Button loading={locating} icon={<EnvironmentOutlined />} onClick={() => tryCenterAtCurrentLocation()}></Button>
                         </Tooltip>
                     </Space>
                 </Col>
@@ -108,10 +132,13 @@ export const Geo = () => {
             </Row>
             <Row>
                 <div id="map" style={{ width: '100%', height: '100%' }}>
-                    <MapContainer center={geoLocation} zoom={13} scrollWheelZoom={true} style={{ height: '100vh' }}>
+                    <MapContainer ref={mapRef} center={geoLocation} zoom={6} scrollWheelZoom={true} style={{ height: '100vh' }}>
                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         {tweetsWithGeo && tweetsWithGeo.map((t) => <TweetLocationMarker key={t?.id} tweetId={t?.id!} latitude={t?.geoLoc?.latitude!} longitude={t?.geoLoc?.longitude!} />)}
                         <CenterMap center={geoLocation} />
+                        <CircularAreaSelector clickHandler={ch} />
+                        {/* <CircleMarker center={geoLocation} radius={radiusPx}></CircleMarker> */}
+                        <Circle center={geoLocation} radius={radiusKm * 1000}></Circle>
                     </MapContainer>
                 </div>
             </Row>
