@@ -1,29 +1,20 @@
-import { useState } from 'react'
-import { LatLng, LatLngExpression, LatLngLiteral, LatLngTuple } from 'leaflet'
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent, useMapEvents } from 'react-leaflet'
+import { useCallback, useEffect, useState } from 'react'
+import { LatLngTuple } from 'leaflet'
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { Tweet } from 'react-twitter-widgets'
-import { Col, Input, Row, Select, Space } from 'antd'
+import { Button, Col, Input, Row, Select, Space } from 'antd'
 const { Option } = Select
+import { AimOutlined } from '@ant-design/icons'
 
-import { GeoLocTypeQl, SortField, SortOrder, useGetTweetsQuery } from '../../generated/graphql'
+import { GeoLocTypeQl, SortField, SortOrder } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 
-const LocationMarker = () => {
-    const [position, setPosition] = useState<LatLng | undefined>(undefined)
-    const map = useMapEvents({
-        click: (e) => {
-            map.flyTo(e.latlng, map.getZoom())
-            setPosition(e.latlng)
-        },
-    })
+const CenterMap = ({ center }: { center: LatLngTuple }) => {
+    const map = useMap()
 
-    return position ? (
-        <Marker position={position}>
-            <Popup>You are here</Popup>
-        </Marker>
-    ) : (
-        <></>
-    )
+    map.setView(center, map.getZoom(), { animate: true, duration: 1 })
+
+    return null
 }
 
 const TweetLocationMarker = ({ tweetId, latitude, longitude }: GeoLocTypeQl & { tweetId: string }) => {
@@ -56,7 +47,7 @@ export const Geo = () => {
     const [showAddHashtag, setShowAddHashtag] = useState(false)
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
 
-    const [geoLocation, setGeoLocation] = useState<LatLngTuple>([49, 12])
+    const [geoLocation, setGeoLocation] = useState<LatLngTuple>([50, 12])
     const [radiusKm, setRadiusKm] = useState<number>(5)
 
     const { data, loading } = useGetFilteredTweetsHook({
@@ -75,6 +66,19 @@ export const Geo = () => {
         sortOrder: sortOrder,
     })
 
+    useEffect(() => {
+        tryCenterAtCurrentLocation()
+    }, [])
+
+    const tryCenterAtCurrentLocation = useCallback(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                console.dir(position)
+                setGeoLocation([position.coords.latitude, position.coords.longitude])
+            })
+        }
+    }, [setGeoLocation])
+
     const tweetsWithGeo = data?.tweet?.find?.tweets?.filter((t) => t?.geoLoc)
 
     // ToDo: click on map and draw circle with 5KM radius. Let user change radius. Use that as a search filter.
@@ -87,6 +91,7 @@ export const Geo = () => {
                         <Input addonBefore="Latitude" defaultValue={0} value={geoLocation?.[0]} onChange={(e) => setGeoLocation([Number(e.target.value), geoLocation[1]])}></Input>
                         <Input addonBefore="Longitude" defaultValue={0} value={geoLocation?.[1]} onChange={(e) => setGeoLocation([geoLocation[0], Number(e.target.value)])}></Input>
                         <Input addonBefore="Radius" defaultValue={0} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))}></Input>
+                        <Button icon={<AimOutlined />} onClick={() => tryCenterAtCurrentLocation()}></Button>
                     </Space>
                 </Col>
                 <Col>{/* <Select showSearch placeholder={'Munich, Germany'} onSearch={onSearch}></Select> */}</Col>
@@ -96,6 +101,7 @@ export const Geo = () => {
                     <MapContainer center={geoLocation} zoom={13} scrollWheelZoom={true} style={{ height: '100vh' }}>
                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                         {tweetsWithGeo && tweetsWithGeo.map((t) => <TweetLocationMarker key={t?.id} tweetId={t?.id!} latitude={t?.geoLoc?.latitude!} longitude={t?.geoLoc?.longitude!} />)}
+                        <CenterMap center={geoLocation} />
                     </MapContainer>
                 </div>
             </Row>
