@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { LatLngTuple } from 'leaflet'
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { Tweet } from 'react-twitter-widgets'
-import { Button, Col, Input, Row, Select, Space } from 'antd'
+import { Button, Col, Divider, Input, Row, Select, Space, Tooltip } from 'antd'
 const { Option } = Select
 import { AimOutlined } from '@ant-design/icons'
 
@@ -49,6 +49,7 @@ export const Geo = () => {
 
     const [geoLocation, setGeoLocation] = useState<LatLngTuple>([50, 12])
     const [radiusKm, setRadiusKm] = useState<number>(5)
+    const [locating, setLocating] = useState<boolean>(false)
 
     const { data, loading } = useGetFilteredTweetsHook({
         authorId: authorId,
@@ -72,10 +73,16 @@ export const Geo = () => {
 
     const tryCenterAtCurrentLocation = useCallback(() => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                console.dir(position)
-                setGeoLocation([position.coords.latitude, position.coords.longitude])
-            })
+            setLocating(true)
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setGeoLocation([position.coords.latitude, position.coords.longitude])
+                    setLocating(false)
+                },
+                () => {
+                    setLocating(false)
+                }
+            )
         }
     }, [setGeoLocation])
 
@@ -91,7 +98,10 @@ export const Geo = () => {
                         <Input addonBefore="Latitude" defaultValue={0} value={geoLocation?.[0]} onChange={(e) => setGeoLocation([Number(e.target.value), geoLocation[1]])}></Input>
                         <Input addonBefore="Longitude" defaultValue={0} value={geoLocation?.[1]} onChange={(e) => setGeoLocation([geoLocation[0], Number(e.target.value)])}></Input>
                         <Input addonBefore="Radius" defaultValue={0} value={radiusKm} onChange={(e) => setRadiusKm(Number(e.target.value))}></Input>
-                        <Button icon={<AimOutlined />} onClick={() => tryCenterAtCurrentLocation()}></Button>
+                        <Divider type="vertical"></Divider>
+                        <Tooltip title="Click center at my location">
+                            <Button loading={locating} icon={<AimOutlined />} onClick={() => tryCenterAtCurrentLocation()}></Button>
+                        </Tooltip>
                     </Space>
                 </Col>
                 <Col>{/* <Select showSearch placeholder={'Munich, Germany'} onSearch={onSearch}></Select> */}</Col>
