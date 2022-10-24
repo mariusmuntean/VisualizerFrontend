@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, DatePicker, Tag, Space, Card, Table, Checkbox, Switch } from 'antd'
+import { Row, Col, Input, DatePicker, Tag, Space, Card, Table, Checkbox, Switch, Divider } from 'antd'
 import moment from 'moment'
 
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
@@ -146,103 +146,92 @@ export const Tweets = () => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
-            <Row wrap justify="center" align="stretch" gutter={[8, 8]}>
-                <Col span={20}>
-                    <Card title="Filter" size="small">
-                        <Space wrap size="small">
-                            <Space direction="vertical">
-                                <Input addonBefore="Author ID" defaultValue={undefined} value={authorId} allowClear onChange={(e) => setAuthorId(e.target.value)} />
-                                <Input addonBefore="Username" defaultValue={username} value={username} allowClear onChange={(e) => setUsername(e.target.value)} />
-                            </Space>
-                            <Space direction="vertical">
-                                <Input addonBefore="TweetId" defaultValue={undefined} value={tweetId} allowClear onChange={(e) => setTweetId(e.target.value)} />
-                                <Input addonBefore="Search Term" defaultValue={undefined} value={searchText} allowClear onChange={(e) => setSearchText(e.target.value)} />
-                            </Space>
-                            <Space>
-                                <Card title="Time Interval" size="small">
-                                    <Row>
-                                        <Col span={6}>From </Col>
-                                        <Col span={18}>
-                                            <DatePicker
-                                                format="YYYY-MM-DD HH:mm:ss"
-                                                size="small"
-                                                value={moment(startingFrom)}
-                                                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                                                onChange={(dt, ds) => {
-                                                    setStartingFrom(dt?.toDate())
-                                                }}
-                                                style={{ width: '100%' }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={6}>To</Col>
-                                        <Col span={18}>
-                                            {' '}
-                                            <DatePicker
-                                                format="YYYY-MM-DD HH:mm:ss"
-                                                size="small"
-                                                value={moment(upTo)}
-                                                showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                                                onChange={(dt, ds) => {
-                                                    setUpTo(dt?.toDate())
-                                                }}
-                                                style={{ width: '100%' }}
-                                            />{' '}
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Space>
-                            <Space>
-                                <Card title="Geo" size="small">
-                                    <Row>
-                                        <Col>
-                                            <Switch
-                                                checkedChildren="Filter Geo"
-                                                unCheckedChildren="Ignore Geo"
-                                                checked={filterGeo}
-                                                onChange={(checked, e) => {
-                                                    setFilterGeo(checked)
-                                                }}
-                                            ></Switch>
-                                        </Col>
-                                        <Col>
-                                            <Checkbox name="WithGeo" disabled={!filterGeo} checked={withGeo} onChange={(e) => setWithGeo(e.target.checked)}>
-                                                With Geo?
-                                            </Checkbox>
-                                        </Col>
-                                    </Row>
-                                </Card>
-                            </Space>
+            <Row wrap justify="center" gutter={[8, 8]}>
+                <Col span={24}>
+                    <Space wrap size="small">
+                        <Space direction="vertical">
+                            <Input addonBefore="Author ID" defaultValue={undefined} value={authorId} allowClear onChange={(e) => setAuthorId(e.target.value)} />
+                            <Input addonBefore="Username" defaultValue={username} value={username} allowClear onChange={(e) => setUsername(e.target.value)} />
                         </Space>
-                    </Card>
-                </Col>
-                <Col span={4}>
-                    <Card title="Hashtags" size="small">
-                        <div>
+                        <Space direction="vertical">
+                            <Input addonBefore="TweetId" defaultValue={undefined} value={tweetId} allowClear onChange={(e) => setTweetId(e.target.value)} />
+                            <Input addonBefore="Search Term" defaultValue={undefined} value={searchText} allowClear onChange={(e) => setSearchText(e.target.value)} />
+                        </Space>
+                        <Divider type="vertical" style={{ height: '3em' }} />
+                        <Space direction="vertical">
+                            <Row justify="center">
+                                <Col span={4}>From</Col>
+                                <Col span={18}>
+                                    <DatePicker
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        size="small"
+                                        value={moment(startingFrom)}
+                                        showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                                        onChange={(dt, ds) => {
+                                            setStartingFrom(dt?.toDate())
+                                        }}
+                                        style={{ width: '100%' }}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row justify="center">
+                                <Col span={4}>To</Col>
+                                <Col span={18}>
+                                    {' '}
+                                    <DatePicker
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        size="small"
+                                        value={moment(upTo)}
+                                        showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                                        onChange={(dt, ds) => {
+                                            setUpTo(dt?.toDate())
+                                        }}
+                                        style={{ width: '100%' }}
+                                    />{' '}
+                                </Col>
+                            </Row>
+                        </Space>
+                        <Divider type="vertical" style={{ height: '3em' }} />
+                        <Space direction="vertical">
+                            <Switch
+                                checkedChildren="Filter Geo"
+                                unCheckedChildren="Ignore Geo"
+                                checked={filterGeo}
+                                onChange={(checked, e) => {
+                                    setFilterGeo(checked)
+                                }}
+                            ></Switch>
+
+                            <Checkbox name="WithGeo" disabled={!filterGeo} checked={withGeo} onChange={(e) => setWithGeo(e.target.checked)}>
+                                With Geo?
+                            </Checkbox>
+                        </Space>
+                        <Divider type="vertical" style={{ height: '3em' }} />
+                        <Space>
+                            <span>Hashtags</span>
                             {hashtags?.map((h) => (
                                 <Tag key={h} icon={<BorderlessTableOutlined />} closable onClose={(e) => onHashtagRemoved(h)}>
                                     {h}
                                 </Tag>
                             ))}
-                        </div>
-                        {showAddHashtag && (
-                            <Input
-                                type="text"
-                                autoFocus
-                                className="tag-input"
-                                value={currentHashtag}
-                                onChange={(e) => setCurrentHashtag(e.target.value)}
-                                onBlur={onCurrentHashtagConfirmed}
-                                onPressEnter={onCurrentHashtagConfirmed}
-                            />
-                        )}
-                        {!showAddHashtag && (
-                            <Tag className="site-tag-plus" onClick={() => setShowAddHashtag(true)}>
-                                <PlusOutlined /> New Hashtag
-                            </Tag>
-                        )}
-                    </Card>
+                            {showAddHashtag && (
+                                <Input
+                                    type="text"
+                                    autoFocus
+                                    className="tag-input"
+                                    value={currentHashtag}
+                                    onChange={(e) => setCurrentHashtag(e.target.value)}
+                                    onBlur={onCurrentHashtagConfirmed}
+                                    onPressEnter={onCurrentHashtagConfirmed}
+                                />
+                            )}
+                            {!showAddHashtag && (
+                                <Tag className="site-tag-plus" onClick={() => setShowAddHashtag(true)}>
+                                    <PlusOutlined /> New Hashtag
+                                </Tag>
+                            )}
+                        </Space>
+                    </Space>
                 </Col>
             </Row>
 
