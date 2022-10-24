@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, DatePicker, Select, Tag, Space, Card, Table } from 'antd'
+import { Row, Col, Input, DatePicker, Tag, Space, Card, Table, Checkbox, Switch } from 'antd'
 import moment from 'moment'
-const { Option } = Select
 
-import { SortField, SortOrder, TweetTypeQl, useGetFilteredTweetsQuery } from '../../generated/graphql'
+import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
 import { SorterResult } from 'antd/lib/table/interface'
+import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 
 export const Tweets = () => {
     const [authorId, setAuthorId] = useState<string | undefined>(undefined)
     const [username, setUsername] = useState<string | undefined>(undefined)
     const [tweetId, setTweetId] = useState<string | undefined>(undefined)
     const [searchText, setSearchText] = useState<string | undefined>(undefined)
+    const [filterGeo, setFilterGeo] = useState<boolean>(false)
+    const [withGeo, setWithGeo] = useState<boolean | undefined>(undefined)
     const [hashtags, setHashtags] = useState<string[] | undefined>(undefined)
 
     const [startingFrom, setStartingFrom] = useState<Date | undefined>(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7))
@@ -27,43 +29,20 @@ export const Tweets = () => {
     const [showAddHashtag, setShowAddHashtag] = useState(false)
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
 
-    const { data, loading, error, fetchMore } = useGetFilteredTweetsQuery({
-        variables: {
-            filter: {
-                authorId: authorId,
-                username: username,
-                tweetId: tweetId,
-                searchTerm: searchText,
-                hashtags: hashtags,
-                startingFrom: startingFrom,
-                upTo: upTo,
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                sortField: sortField,
-                sortOrder: sortOrder,
-            },
-        },
+    const { data, loading } = useGetFilteredTweetsHook({
+        authorId: authorId,
+        username: username,
+        tweetId: tweetId,
+        searchTerm: searchText,
+        onlyWithGeo: filterGeo ? withGeo : undefined,
+        hashtags: hashtags,
+        startingFrom: startingFrom,
+        upTo: upTo,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        sortField: sortField,
+        sortOrder: sortOrder,
     })
-
-    useEffect(() => {
-        fetchMore({
-            variables: {
-                filter: {
-                    authorId: authorId,
-                    username: username,
-                    tweetId: tweetId,
-                    searchTerm: searchText,
-                    hashtags: hashtags,
-                    startingFrom: startingFrom,
-                    upTo: upTo,
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    sortField: sortField,
-                    sortOrder: sortOrder,
-                },
-            },
-        })
-    }, [authorId, username, tweetId, searchText, hashtags, startingFrom, upTo, pageSize, pageNumber, sortField, sortOrder, fetchMore])
 
     const onCurrentHashtagConfirmed = () => {
         if (currentHashtag && (!hashtags || hashtags?.indexOf(currentHashtag) === -1)) {
@@ -149,6 +128,14 @@ export const Tweets = () => {
             },
         },
         {
+            title: 'Geo',
+            dataIndex: 'geoLoc',
+            width: '5%',
+            render: (text, record) => {
+                return `(${record.geoLoc?.latitude}, ${record.geoLoc?.latitude})`
+            },
+        },
+        {
             title: 'Created At',
             dataIndex: 'createdAt',
             sortDirections: ['descend', 'ascend'],
@@ -160,7 +147,7 @@ export const Tweets = () => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
             <Row wrap justify="center" align="stretch" gutter={[8, 8]}>
-                <Col span={16}>
+                <Col span={20}>
                     <Card title="Filter" size="small">
                         <Space wrap size="small">
                             <Space direction="vertical">
@@ -206,10 +193,31 @@ export const Tweets = () => {
                                     </Row>
                                 </Card>
                             </Space>
+                            <Space>
+                                <Card title="Geo" size="small">
+                                    <Row>
+                                        <Col>
+                                            <Switch
+                                                checkedChildren="Filter Geo"
+                                                unCheckedChildren="Ignore Geo"
+                                                checked={filterGeo}
+                                                onChange={(checked, e) => {
+                                                    setFilterGeo(checked)
+                                                }}
+                                            ></Switch>
+                                        </Col>
+                                        <Col>
+                                            <Checkbox name="WithGeo" disabled={!filterGeo} checked={withGeo} onChange={(e) => setWithGeo(e.target.checked)}>
+                                                With Geo?
+                                            </Checkbox>
+                                        </Col>
+                                    </Row>
+                                </Card>
+                            </Space>
                         </Space>
                     </Card>
                 </Col>
-                <Col span={8}>
+                <Col span={4}>
                     <Card title="Hashtags" size="small">
                         <div>
                             {hashtags?.map((h) => (
