@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button, Col, Input, notification, Row, Space, Spin, Table } from 'antd'
+import { Col, Input, notification, Row, Space, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
 import { debounce, toNumber } from 'lodash'
 
@@ -100,13 +100,7 @@ export const LiveRankedHashtags = () => {
                 <Col span={24}>
                     <div style={{ margin: '1em', display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                         <Space direction="vertical">
-                            <Input
-                                autoFocus
-                                addonBefore="Top"
-                                addonAfter="hashtags"
-                                defaultValue={topHashtagAmount}
-                                onChange={(e) => setTopHashtagAmountDebounced(toNumber(e.target.value))}
-                            />
+                            <Input autoFocus addonBefore="Top" addonAfter="hashtags" defaultValue={topHashtagAmount} onChange={(e) => setTopHashtagAmountDebounced(toNumber(e.target.value))} />
                         </Space>
                     </div>
                 </Col>
