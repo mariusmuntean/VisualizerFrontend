@@ -10,13 +10,21 @@ import { Social } from './components/social/social'
 import { Tweets } from './components/tweets'
 import { useStartStreamingMutation, useStopStreamingMutation } from './generated/graphql'
 import { Geo } from './components/geo'
+import { useLocation, useNavigate, useNavigation } from 'react-router-dom'
 
 const { TabPane } = Tabs
 
 function App() {
+    const location = useLocation()
+    const navigate = useNavigate()
+
     const isStreaming = useIsStreaming()
     const [startStreaming, startStreamingStatus] = useStartStreamingMutation()
     const [stopStreaming, stopStreamingStatus] = useStopStreamingMutation()
+
+    const onTabChange = (newTabName: string) => {
+        navigate(newTabName)
+    }
 
     return (
         <>
@@ -36,20 +44,20 @@ function App() {
             </Row>
             <Row>
                 <Col span={24}>
-                    <Tabs defaultActiveKey="1" centered destroyInactiveTabPane={true}>
-                        <TabPane tab="Hashtag Added" key="1">
+                    <Tabs defaultActiveKey="hashtags" activeKey={location.pathname} defaultValue="hashtags" onChange={onTabChange} centered destroyInactiveTabPane={true}>
+                        <TabPane tab="Hashtag Added" key="/hashtags">
                             <LiveHashtagAdded />
                         </TabPane>
-                        <TabPane tab="Ranked Hashtags" key="2">
+                        <TabPane tab="Ranked Hashtags" key="/rankedhashtags">
                             <LiveRankedHashtags />
                         </TabPane>
-                        <TabPane tab="Tweets" key="3">
+                        <TabPane tab="Tweets" key="/tweets">
                             <Tweets />
                         </TabPane>
-                        <TabPane tab="Social Graph" key="4">
-                            <Social></Social>
+                        <TabPane tab="Social Graph" key="/social">
+                            <Social />
                         </TabPane>
-                        <TabPane tab="Geo" key="5">
+                        <TabPane tab="Geo" key="/geo">
                             <Geo />
                         </TabPane>
                     </Tabs>
