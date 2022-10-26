@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Col, Row, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
 
 import { useGetHashtagsQuery, useRankedHashtagSubscription } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
+import { useSearchParams } from 'react-router-dom'
 
 interface Word {
     text: string
@@ -11,7 +12,13 @@ interface Word {
 }
 
 export const LiveHashtagAdded = () => {
-    const [topHashtagAmount, setTopHashtagAmount] = useState(50)
+    const [searchParams, setSearchParams] = useSearchParams()
+    const topHashtagAmount = useMemo(() => (searchParams.has('topHashtagAmount') ? parseInt(searchParams.get('topHashtagAmount')!, 10) : 50), [])
+
+    useEffect(() => {
+        setSearchParams({ topHashtagAmount: topHashtagAmount.toString() })
+    }, [])
+
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
     const { loading: loadingHashtagAdded, data: hashtagAddedData } = useRankedHashtagSubscription({ fetchPolicy: 'network-only' })
 
@@ -78,7 +85,6 @@ export const LiveHashtagAdded = () => {
         transitionDuration: 500,
         enableOptimizations: true,
     }
-    const size: [number, number] = [1000, 700]
 
     const columns: ColumnType<Word>[] = [
         {
