@@ -5,10 +5,20 @@ import { debounce, toNumber } from 'lodash'
 
 import { useGetHashtagsQuery, useTopRankedHashtagsChangedSubscription } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
+import { useSearchParams } from 'react-router-dom'
 
 export const LiveRankedHashtags = () => {
-    const [topHashtagAmount, setTopHashtagAmount] = useState<number>(50)
+    // Extract the amount of top hashtags to subscribe to
+    const [searchparams, setSearchParams] = useSearchParams()
+    const topHashtagAmount = searchparams.has('topHashtagAmount') ? parseInt(searchparams.get('topHashtagAmount')!, 10) : 50
+
+    // Persist the amount of top hashtags to the URL (necessary if the default was used)
+    useEffect(() => setSearchParams({ topHashtagAmount: topHashtagAmount.toString() }), [])
+
+    // Get the top hashtags from the database
     const { loading: loadingHashtags, data: hashtagsData } = useGetHashtagsQuery({ variables: { amount: topHashtagAmount } })
+
+    // Subscribe to the top hashtags
     const { loading: loadingRankedHashtagsChanged, data: rankedHashtagsChanged } = useTopRankedHashtagsChangedSubscription({
         variables: { amount: topHashtagAmount },
         fetchPolicy: 'network-only',
@@ -16,11 +26,10 @@ export const LiveRankedHashtags = () => {
 
     const [wordCloudData, setWordCloudData] = useState<Word[]>([])
 
-    const setTopHashtagAmountDebounced = useCallback(debounce(setTopHashtagAmount, 400), [setTopHashtagAmount])
-
-    // ToDo: add buttons to start and stop streamming
-    // ToDo: show ranked list of hashtag names and scores
-    // ToDo: throttle the updates somehow. The wordcloud is to active.
+    const setTopHashtagAmountDebounced = useCallback(
+        debounce((newTopHashtagAmount: number) => setSearchParams({ topHashtagAmount: newTopHashtagAmount.toString() }), 400),
+        [setSearchParams]
+    )
 
     useEffect(() => {
         if (loadingHashtags) {
