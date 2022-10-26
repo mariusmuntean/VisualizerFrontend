@@ -2,7 +2,8 @@ import { Button, Col, Row, Tabs } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
 import 'antd/dist/antd.css'
 
-import './App.css'
+import { useLocation, useNavigate } from 'react-router-dom'
+
 import { LiveHashtagAdded } from './components/hashtagAdded'
 import { LiveRankedHashtags } from './components/rankedHashtagsChanged/liveRankedHashtags'
 import { useIsStreaming } from './components/hooks/useIsStreamingHook'
@@ -10,7 +11,8 @@ import { Social } from './components/social/social'
 import { Tweets } from './components/tweets'
 import { useStartStreamingMutation, useStopStreamingMutation } from './generated/graphql'
 import { Geo } from './components/geo'
-import { useLocation, useNavigate, useNavigation } from 'react-router-dom'
+
+import './App.css'
 
 const { TabPane } = Tabs
 
@@ -19,8 +21,8 @@ function App() {
     const navigate = useNavigate()
 
     const isStreaming = useIsStreaming()
-    const [startStreaming, startStreamingStatus] = useStartStreamingMutation()
-    const [stopStreaming, stopStreamingStatus] = useStopStreamingMutation()
+    const [startStreaming] = useStartStreamingMutation()
+    const [stopStreaming] = useStopStreamingMutation()
 
     const onTabChange = (newTabName: string) => {
         navigate(newTabName)
