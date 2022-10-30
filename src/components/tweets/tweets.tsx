@@ -1,33 +1,37 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
-import { Row, Col, Input, DatePicker, Tag, Space, Card, Table, Checkbox, Switch, Divider } from 'antd'
+import { Row, Col, Input, DatePicker, Tag, Space, Table, Checkbox, Switch, Divider } from 'antd'
+import { ColumnType } from 'antd/lib/table'
+import { SorterResult } from 'antd/lib/table/interface'
 import moment from 'moment'
 
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
-import { ColumnType } from 'antd/lib/table'
-import { SorterResult } from 'antd/lib/table/interface'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
+import { getColumns } from './columns'
+import { useArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from './hooks'
+import './../../extensions/string.extensions'
 
 export const Tweets = () => {
-    const [authorId, setAuthorId] = useState<string | undefined>(undefined)
-    const [username, setUsername] = useState<string | undefined>(undefined)
-    const [tweetId, setTweetId] = useState<string | undefined>(undefined)
-    const [searchText, setSearchText] = useState<string | undefined>(undefined)
-    const [filterGeo, setFilterGeo] = useState<boolean>(false)
-    const [withGeo, setWithGeo] = useState<boolean | undefined>(undefined)
-    const [hashtags, setHashtags] = useState<string[] | undefined>(undefined)
+    const [authorId, setAuthorId] = useUrlState('authorId', undefined)
+    const [username, setUsername] = useUrlState('username', undefined)
+    const [tweetId, setTweetId] = useUrlState('tweetId', undefined)
+    const [searchText, setSearchText] = useUrlState('searchText', undefined)
 
-    const [startingFrom, setStartingFrom] = useState<Date | undefined>(new Date(Date.now() - 1000 * 60 * 60 * 24 * 7))
-    const [upTo, setUpTo] = useState<Date | undefined>(undefined)
+    const [startingFrom, setStartingFrom] = useDateUrlState('startingFrom', undefined)
+    const [upTo, setUpTo] = useDateUrlState('upTo', undefined)
 
-    const [pageSize, setPageSize] = useState<number | undefined>(10)
-    const [pageNumber, setPageNumber] = useState<number | undefined>(0)
+    const [filterGeo, setFilterGeo] = useBoolUrlState('filterGeo', false)
+    const [withGeo, setWithGeo] = useBoolUrlState('withGeo', undefined)
 
-    const [sortField, setSortField] = useState<SortField | undefined>(SortField.Username)
-    const [sortOrder, setSortOrder] = useState<SortOrder | undefined>(SortOrder.Ascending)
-
+    const [hashtags, setHashtags] = useArrayUrlState('hashtags', undefined)
     const [showAddHashtag, setShowAddHashtag] = useState(false)
     const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
+
+    const [pageSize, setPageSize] = useNumberUrlState('pageSize', 10)
+    const [pageNumber, setPageNumber] = useNumberUrlState('pageNumber', 0)
+
+    const [sortField, setSortField] = useUrlState('sortField', SortField.Username)
+    const [sortOrder, setSortOrder] = useUrlState('sortOrder', SortOrder.Ascending)
 
     const { data, loading } = useGetFilteredTweetsHook({
         authorId: authorId,
@@ -40,8 +44,8 @@ export const Tweets = () => {
         upTo: upTo,
         pageSize: pageSize,
         pageNumber: pageNumber,
-        sortField: sortField,
-        sortOrder: sortOrder,
+        sortField: sortField ? (sortField.toString() as SortField) : null,
+        sortOrder: sortOrder ? (sortOrder.toString() as SortOrder) : null,
     })
 
     const onCurrentHashtagConfirmed = () => {
@@ -56,93 +60,7 @@ export const Tweets = () => {
         setHashtags(hashtags?.filter((h) => h !== hashtag))
     }
 
-    const columns: ColumnType<TweetTypeQl>[] = [
-        {
-            title: 'Tweet Id',
-            dataIndex: 'tweetId',
-            render: (text, record) => record.id,
-        },
-        {
-            title: 'Username',
-            dataIndex: 'username',
-            sorter: true,
-            sortDirections: ['descend', 'ascend'],
-            render: (text, record) => record.username,
-        },
-        {
-            title: 'Tweet',
-            dataIndex: 'tweet',
-            render: (text, record) => record.text,
-        },
-        {
-            title: 'Hashtags',
-            dataIndex: 'hashtags',
-            render: (text, record) => {
-                return (
-                    <Space wrap>
-                        {record.entities?.hashtags?.map((hashtag) => (
-                            <Tag key={hashtag}>{hashtag}</Tag>
-                        ))}
-                    </Space>
-                )
-            },
-        },
-        {
-            title: 'Mentions',
-            dataIndex: 'mentions',
-            render: (text, record) => {
-                return (
-                    <Space wrap>
-                        {record.entities?.mentions?.map((mention) => (
-                            <Tag key={mention}>{mention}</Tag>
-                        ))}
-                    </Space>
-                )
-            },
-        },
-        {
-            title: 'Likes',
-            dataIndex: 'publicMetrics.likeCount',
-            sorter: true,
-            sortDirections: ['descend', 'ascend'],
-            render: (text, record) => {
-                return record.publicMetricsLikeCount
-            },
-        },
-        {
-            title: 'Retweets',
-            dataIndex: 'publicMetrics.retweetCount',
-            sorter: true,
-            sortDirections: ['descend', 'ascend'],
-            render: (text, record) => {
-                return record.publicMetricsRetweetCount
-            },
-        },
-        {
-            title: 'Replies',
-            dataIndex: 'publicMetrics.replyCount',
-            sorter: true,
-            sortDirections: ['descend', 'ascend'],
-            render: (text, record) => {
-                return record.publicMetricsReplyCount
-            },
-        },
-        {
-            title: 'Geo',
-            dataIndex: 'geoLoc',
-            width: '5%',
-            render: (text, record) => {
-                return `(${record.geoLoc?.latitude}, ${record.geoLoc?.latitude})`
-            },
-        },
-        {
-            title: 'Created At',
-            dataIndex: 'createdAt',
-            sortDirections: ['descend', 'ascend'],
-            sorter: true,
-            render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss'),
-        },
-    ]
+    const columns: ColumnType<TweetTypeQl>[] = useMemo(() => getColumns(), [])
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
