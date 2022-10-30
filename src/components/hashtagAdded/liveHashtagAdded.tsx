@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Col, Row, Spin, Table } from 'antd'
 import ReactWordcloud, { CallbacksProp, OptionsProp } from 'react-wordcloud'
-
-import { useGetHashtagsQuery, useRankedHashtagSubscription } from '../../generated/graphql'
 import { ColumnType } from 'antd/lib/table'
 import { useSearchParams } from 'react-router-dom'
+
+import { useGetHashtagsQuery, useRankedHashtagSubscription } from '../../generated/graphql'
 
 interface Word {
     text: string

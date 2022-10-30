@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Col, Input, notification, Row, Space, Spin, Table } from 'antd'
-import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
 import { debounce, toNumber } from 'lodash'
+import { Col, Input, notification, Row, Space, Spin, Table } from 'antd'
+import { ColumnType } from 'antd/lib/table'
+import ReactWordcloud, { CallbacksProp, OptionsProp, Word } from 'react-wordcloud'
+import { useSearchParams } from 'react-router-dom'
 
 import { useGetHashtagsQuery, useTopRankedHashtagsChangedSubscription } from '../../generated/graphql'
-import { ColumnType } from 'antd/lib/table'
-import { useSearchParams } from 'react-router-dom'
 
 export const LiveRankedHashtags = () => {
     // Extract the amount of top hashtags to subscribe to
