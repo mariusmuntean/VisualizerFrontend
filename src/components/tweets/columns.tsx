@@ -1,14 +1,14 @@
 import { Space, Tag } from 'antd'
 import { ColumnType } from 'antd/lib/table'
-import { wrap } from 'lodash'
 import moment from 'moment'
 
 import { TweetTypeQl } from '../../generated/graphql'
 
-export const getColumns = (): ColumnType<TweetTypeQl>[] => [
+export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
     {
         title: 'Tweet Id',
         dataIndex: 'tweetId',
+        width: '9%',
         render: (text, record) => record.id,
     },
     {
@@ -16,16 +16,20 @@ export const getColumns = (): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'username',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
+        ellipsis: false,
+        width: '8%',
         render: (text, record) => record.username,
     },
     {
         title: 'Tweet',
         dataIndex: 'tweet',
+        width: 'auto',
         render: (text, record) => record.text,
     },
     {
         title: 'Hashtags',
         dataIndex: 'hashtags',
+        width: '10%',
         render: (text, record) => {
             return (
                 <Space wrap>
@@ -39,6 +43,7 @@ export const getColumns = (): ColumnType<TweetTypeQl>[] => [
     {
         title: 'Mentions',
         dataIndex: 'mentions',
+        width: '10%',
         render: (text, record) => {
             return (
                 <Space wrap>
@@ -54,6 +59,7 @@ export const getColumns = (): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'publicMetrics.likeCount',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
+        width: '5%',
         render: (text, record) => {
             return record.publicMetricsLikeCount
         },
@@ -63,6 +69,7 @@ export const getColumns = (): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'publicMetrics.retweetCount',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
+        width: '5%',
         render: (text, record) => {
             return record.publicMetricsRetweetCount
         },
@@ -72,23 +79,30 @@ export const getColumns = (): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'publicMetrics.replyCount',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
+        width: '5%',
         render: (text, record) => {
             return record.publicMetricsReplyCount
         },
     },
-    {
-        title: 'Geo',
-        dataIndex: 'geoLoc',
-        width: '5%',
-        render: (text, record) => {
-            return `(${record.geoLoc?.latitude}, ${record.geoLoc?.latitude})`
-        },
-    },
+    ...(includeGeo
+        ? [
+              {
+                  title: 'Geo',
+                  dataIndex: 'geoLoc',
+                  width: '10%',
+                  render: (text, record) => {
+                      return `(${record.geoLoc?.latitude ?? ''}, ${record.geoLoc?.latitude ?? ''})`
+                  },
+              },
+          ]
+        : []),
     {
         title: 'Created At',
         dataIndex: 'createdAt',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
-        render: (text, record) => moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss'),
+        width: '10%',
+        ellipsis: true,
+        render: (text, record) => <div style={{ wordBreak: 'normal' }}>{moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>,
     },
 ]

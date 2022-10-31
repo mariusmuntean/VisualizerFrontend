@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
 import { Row, Col, Input, DatePicker, Tag, Space, Table, Checkbox, Switch, Divider } from 'antd'
 import { ColumnType } from 'antd/lib/table'
@@ -10,8 +10,10 @@ import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 import { getColumns } from './columns'
 import { useArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from './hooks'
 import './../../extensions/string.extensions'
+import { useSearchParams } from 'react-router-dom'
 
 export const Tweets = () => {
+    const [_, setSearchParams] = useSearchParams()
     const [authorId, setAuthorId] = useUrlState('authorId', undefined)
     const [username, setUsername] = useUrlState('username', undefined)
     const [tweetId, setTweetId] = useUrlState('tweetId', undefined)
@@ -24,11 +26,11 @@ export const Tweets = () => {
     const [withGeo, setWithGeo] = useBoolUrlState('withGeo', undefined)
 
     const [hashtags, setHashtags] = useArrayUrlState('hashtags', undefined)
-    const [showAddHashtag, setShowAddHashtag] = useState(false)
-    const [currentHashtag, setCurrentHashtag] = useState<string | undefined>(undefined)
+    const [showAddHashtag, setShowAddHashtag] = useBoolUrlState('showAddHashtag', false)
+    const [currentHashtag, setCurrentHashtag] = useUrlState('currentHashtag', undefined)
 
     const [pageSize, setPageSize] = useNumberUrlState('pageSize', 10)
-    const [pageNumber, setPageNumber] = useNumberUrlState('pageNumber', 0)
+    const [pageNumber, setPageNumber] = useNumberUrlState('pageNumber', 1)
 
     const [sortField, setSortField] = useUrlState('sortField', SortField.Username)
     const [sortOrder, setSortOrder] = useUrlState('sortOrder', SortOrder.Ascending)
@@ -43,24 +45,36 @@ export const Tweets = () => {
         startingFrom: startingFrom,
         upTo: upTo,
         pageSize: pageSize,
-        pageNumber: pageNumber,
+        pageNumber: pageNumber ? pageNumber - 1 : undefined,
         sortField: sortField ? (sortField.toString() as SortField) : null,
         sortOrder: sortOrder ? (sortOrder.toString() as SortOrder) : null,
     })
 
     const onCurrentHashtagConfirmed = () => {
+        // Updating multiple query params with my custom hooks doesn't work. It seems as if each hook resets the previous one.
+        // Hence I'm explicitly updating multiple query params in one go.
+        let newhashtags = hashtags
         if (currentHashtag && (!hashtags || hashtags?.indexOf(currentHashtag) === -1)) {
-            setHashtags([...(hashtags || []), currentHashtag])
+            newhashtags = [...(hashtags || []), currentHashtag]
         }
-        setShowAddHashtag(false)
-        setCurrentHashtag('')
+
+        setSearchParams((prev) => {
+            prev.delete('currentHashtag')
+            prev.set('showAddHashtag', false.toString())
+            if (newhashtags && newhashtags.length > 0) {
+                prev.set('hashtags', newhashtags.join(','))
+            } else {
+                prev.delete('hashtags')
+            }
+            return prev
+        })
     }
 
     const onHashtagRemoved = (hashtag: string) => {
         setHashtags(hashtags?.filter((h) => h !== hashtag))
     }
 
-    const columns: ColumnType<TweetTypeQl>[] = useMemo(() => getColumns(), [])
+    const columns: ColumnType<TweetTypeQl>[] = useMemo(() => getColumns(filterGeo ?? true), [filterGeo])
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', margin: '0.5em' }}>
@@ -194,14 +208,14 @@ export const Tweets = () => {
                             }
                         }}
                         pagination={{
-                            pageSize: pageSize,
-                            current: (pageNumber ?? 0) + 1,
+                            pageSize: pageSize ?? 11,
+                            current: pageNumber ?? 3,
                             showSizeChanger: true,
                             total: data?.tweet?.find?.total ?? 0,
                             showTotal: (total) => `${data?.tweet?.find?.total} tweets`,
                             onChange: (pageNumber, pageSize) => {
-                                setPageNumber(pageNumber - 1)
                                 setPageSize(pageSize)
+                                setPageNumber(pageNumber)
                             },
                         }}
                     ></Table>
