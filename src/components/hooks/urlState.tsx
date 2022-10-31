@@ -44,7 +44,9 @@ export const useBoolUrlState = (paramName: string, defaultValue: boolean | undef
     ]
 }
 
-export const useNumberUrlState = (paramName: string, defaultValue: number | undefined): [number | undefined, (newValue: number | undefined) => void] => {
+type InputNumberType = number | undefined
+type ReturnNumberType<T> = T extends number ? number : InputNumberType
+export const useNumberUrlState = <T extends InputNumberType>(paramName: string, defaultValue: T): [ReturnNumberType<T>, (newValue: number | undefined) => void] => {
     const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? defaultValue.toString() : undefined)
 
     return [

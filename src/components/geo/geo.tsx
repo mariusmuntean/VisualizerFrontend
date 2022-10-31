@@ -7,6 +7,7 @@ import { EnvironmentOutlined } from '@ant-design/icons'
 
 import { GeoLocTypeQl } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
+import { useNumberUrlState } from '../hooks/urlState'
 
 const CenterMap = ({ center }: { center: LatLngTuple }) => {
     const map = useMap()
@@ -34,7 +35,7 @@ export const Geo = () => {
     const mapRef = useRef<Map | undefined>(undefined)
 
     const [geoLocation, setGeoLocation] = useState<LatLngTuple>([50, 12])
-    const [radiusKm, setRadiusKm] = useState<number>(300)
+    const [radiusKm, setRadiusKm] = useNumberUrlState('radiusKm', 300)
     const [locating, setLocating] = useState<boolean>(false)
 
     const { data } = useGetFilteredTweetsHook({
