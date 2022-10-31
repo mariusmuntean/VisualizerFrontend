@@ -1,1 +1,1 @@
-export { Geo } from './geo'
+export { Geo, GeoLocationQueryParamName, RadiusQueryParamName } from './geo'

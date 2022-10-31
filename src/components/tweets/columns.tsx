@@ -1,8 +1,10 @@
 import { Space, Tag } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 import { TweetTypeQl } from '../../generated/graphql'
+import { getShowTweetsAtLocationUrl, useShowTweetsAtLocation } from '../../util/useShowTweetsAtLocation'
 
 export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
     {
@@ -91,7 +93,7 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
                   dataIndex: 'geoLoc',
                   width: '10%',
                   render: (text, record) => {
-                      return `(${record.geoLoc?.latitude ?? ''}, ${record.geoLoc?.latitude ?? ''})`
+                      return <a href={getShowTweetsAtLocationUrl([record.geoLoc?.latitude, record.geoLoc?.longitude])}>{`(${record.geoLoc?.latitude ?? ''}, ${record.geoLoc?.longitude ?? ''})`}</a>
                   },
               },
           ]

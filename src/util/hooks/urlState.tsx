@@ -68,11 +68,13 @@ export const useStringArrayUrlState = (paramName: string, defaultValue: string[]
     ]
 }
 
-export const useNumberArrayUrlState = (paramName: string, defaultValue: number[] | undefined): [number[] | undefined, (newValue: number[] | undefined) => void] => {
+type InputNumberArrayType = number[] | undefined
+type ReturnNumberArrayType<T> = T extends number[] ? number[] : InputNumberArrayType
+export const useNumberArrayUrlState = <T extends InputNumberArrayType>(paramName: string, defaultValue: T): [ReturnNumberArrayType<T>, (newValue: number[] | undefined) => void] => {
     const [strArrVal, strArrValSetter] = useStringArrayUrlState(paramName, defaultValue ? defaultValue.map((s) => s.toString()) : undefined)
 
     return [
-        strArrVal?.map((s) => s.toNumber()),
+        strArrVal?.map((s) => s.toNumber()) as ReturnNumberArrayType<T>,
         (newValue: number[] | undefined) => {
             strArrValSetter(newValue?.map((s) => s.toString()))
         },

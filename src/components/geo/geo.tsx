@@ -6,8 +6,8 @@ import { Button, Col, Divider, Input, InputNumber, Row, Space, Tooltip } from 'a
 import { EnvironmentOutlined } from '@ant-design/icons'
 
 import { GeoLocTypeQl } from '../../generated/graphql'
-import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
-import { useNumberUrlState } from '../hooks/urlState'
+import { useGetFilteredTweetsHook } from '../../util/hooks/useGetFilteredTweetsHook'
+import { useNumberArrayUrlState, useNumberUrlState } from '../../util/hooks/urlState'
 
 const CenterMap = ({ center }: { center: LatLngTuple }) => {
     const map = useMap()
@@ -31,11 +31,19 @@ const TweetLocationMarker = ({ tweetId, latitude, longitude }: GeoLocTypeQl & { 
     )
 }
 
+const defaultGeo = [50, 12]
+
+export const GeoLocationQueryParamName = 'geoLocation'
+export const RadiusQueryParamName = 'radiusKm'
+
 export const Geo = () => {
     const mapRef = useRef<Map | undefined>(undefined)
 
-    const [geoLocation, setGeoLocation] = useState<LatLngTuple>([50, 12])
-    const [radiusKm, setRadiusKm] = useNumberUrlState('radiusKm', 300)
+    const [geo, setGeo] = useNumberArrayUrlState(GeoLocationQueryParamName, defaultGeo)
+    const geoLocation: LatLngTuple = [geo[0], geo[1]]
+    const setGeoLocation = (newGeoLocation: LatLngTuple) => setGeo([newGeoLocation[0], newGeoLocation[1]])
+
+    const [radiusKm, setRadiusKm] = useNumberUrlState(RadiusQueryParamName, 300)
     const [locating, setLocating] = useState<boolean>(false)
 
     const { data } = useGetFilteredTweetsHook({
@@ -44,7 +52,10 @@ export const Geo = () => {
     })
 
     useEffect(() => {
-        tryCenterAtCurrentLocation()
+        // Only auto navigate to the current location if no geoLocation is set. If one is set via the URL then stand still
+        if (geo[0] === defaultGeo[0] || geo[1] === defaultGeo[1]) {
+            tryCenterAtCurrentLocation()
+        }
     }, [])
 
     const tryCenterAtCurrentLocation = useCallback(() => {

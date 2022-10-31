@@ -5,7 +5,7 @@ import { VisNetwork } from './vis-network'
 import { Data, Options, Node } from 'vis-network'
 
 import { MentionRelationshipType, useGetMentionsQuery, useGetUserCountQuery } from '../../generated/graphql'
-import { useNumberUrlState, useUrlState } from '../hooks/urlState'
+import { useNumberUrlState, useUrlState } from '../../util/hooks/urlState'
 
 export const Social = () => {
     const [authorUsername, setAuthorUserName] = useUrlState('authorUsername', undefined)

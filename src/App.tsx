@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { LiveHashtagAdded } from './components/hashtagAdded'
 import { LiveRankedHashtags } from './components/rankedHashtagsChanged/liveRankedHashtags'
-import { useIsStreaming } from './components/hooks/useIsStreamingHook'
+import { useIsStreaming } from './util/hooks/useIsStreamingHook'
 import { Social } from './components/social/social'
 import { Tweets } from './components/tweets'
 import { useStartStreamingMutation, useStopStreamingMutation } from './generated/graphql'

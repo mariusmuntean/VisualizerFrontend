@@ -6,9 +6,9 @@ import { SorterResult } from 'antd/lib/table/interface'
 import moment from 'moment'
 
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
-import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
+import { useGetFilteredTweetsHook } from '../../util/hooks/useGetFilteredTweetsHook'
 import { getColumns } from './columns'
-import { useStringArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from '../hooks/urlState'
+import { useStringArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from '../../util/hooks/urlState'
 import './../../extensions/string.extensions'
 import { useSearchParams } from 'react-router-dom'
 
