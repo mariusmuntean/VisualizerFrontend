@@ -47,8 +47,8 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
         render: (text, record) => {
             return (
                 <Space wrap>
-                    {record.entities?.mentions?.map((mention) => (
-                        <Tag key={mention}>{mention}</Tag>
+                    {record.entities?.mentions?.map((mention, idx) => (
+                        <Tag key={`${mention}${idx}`}>{mention}</Tag>
                     ))}
                 </Space>
             )

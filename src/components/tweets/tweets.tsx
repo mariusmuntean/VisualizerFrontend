@@ -173,6 +173,7 @@ export const Tweets = () => {
                         loading={loading}
                         dataSource={(data?.tweet?.find?.tweets as TweetTypeQl[]) ?? []}
                         columns={columns}
+                        rowKey="id"
                         sortDirections={['descend', 'ascend']}
                         onChange={(pagination, filters, sorter: SorterResult<TweetTypeQl> | SorterResult<TweetTypeQl>[]) => {
                             if ('order' in sorter && sorter.order) {
