@@ -8,7 +8,7 @@ import moment from 'moment'
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 import { getColumns } from './columns'
-import { useArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from '../hooks/urlState'
+import { useStringArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from '../hooks/urlState'
 import './../../extensions/string.extensions'
 import { useSearchParams } from 'react-router-dom'
 
@@ -25,7 +25,7 @@ export const Tweets = () => {
     const [filterGeo, setFilterGeo] = useBoolUrlState('filterGeo', false)
     const [withGeo, setWithGeo] = useBoolUrlState('withGeo', undefined)
 
-    const [hashtags, setHashtags] = useArrayUrlState('hashtags', undefined)
+    const [hashtags, setHashtags] = useStringArrayUrlState('hashtags', undefined)
     const [showAddHashtag, setShowAddHashtag] = useBoolUrlState('showAddHashtag', false)
     const [currentHashtag, setCurrentHashtag] = useUrlState('currentHashtag', undefined)
 

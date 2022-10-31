@@ -55,13 +55,24 @@ export const useNumberUrlState = (paramName: string, defaultValue: number | unde
     ]
 }
 
-export const useArrayUrlState = (paramName: string, defaultValue: string[] | undefined): [string[] | undefined, (newValue: string[] | undefined) => void] => {
+export const useStringArrayUrlState = (paramName: string, defaultValue: string[] | undefined): [string[] | undefined, (newValue: string[] | undefined) => void] => {
     const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? defaultValue.join(',') : undefined)
 
     return [
         strVal?.toArray(),
         (newValue: string[] | undefined) => {
             strValSetter(newValue?.join(','))
+        },
+    ]
+}
+
+export const useNumberArrayUrlState = (paramName: string, defaultValue: number[] | undefined): [number[] | undefined, (newValue: number[] | undefined) => void] => {
+    const [strArrVal, strArrValSetter] = useStringArrayUrlState(paramName, defaultValue ? defaultValue.map((s) => s.toString()) : undefined)
+
+    return [
+        strArrVal?.map((s) => s.toNumber()),
+        (newValue: number[] | undefined) => {
+            strArrValSetter(newValue?.map((s) => s.toString()))
         },
     ]
 }
