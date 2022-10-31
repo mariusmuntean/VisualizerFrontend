@@ -1,17 +1,18 @@
 import { Alert, Button, Col, Input, InputNumber, List, notification, Row, Spin } from 'antd'
 import { ArrowRightOutlined, ReloadOutlined } from '@ant-design/icons'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { VisNetwork } from './vis-network'
 import { Data, Options, Node } from 'vis-network'
 
 import { MentionRelationshipType, useGetMentionsQuery, useGetUserCountQuery } from '../../generated/graphql'
+import { useNumberUrlState, useUrlState } from '../hooks/urlState'
 
 export const Social = () => {
-    const [authorUsername, setAuthorUserName] = useState<string | undefined>(undefined)
-    const [mentionedUsername, setMentionedUserName] = useState<string | undefined>(undefined)
-    const [minHops, setMinHops] = useState<number>(1)
-    const [maxHops, setMaxHops] = useState<number>(5)
-    const [limit, setLimit] = useState<number>(550)
+    const [authorUsername, setAuthorUserName] = useUrlState('authorUsername', undefined)
+    const [mentionedUsername, setMentionedUserName] = useUrlState('mentionedUsername', undefined)
+    const [minHops, setMinHops] = useNumberUrlState('minHops', 1)
+    const [maxHops, setMaxHops] = useNumberUrlState('maxHops', 5)
+    const [limit, setLimit] = useNumberUrlState('limit', 550)
 
     const userCountResult = useGetUserCountQuery({ fetchPolicy: 'network-only' })
     const mentionsResult = useGetMentionsQuery({ variables: { filter: { amount: limit } }, fetchPolicy: 'no-cache' })
@@ -59,7 +60,7 @@ export const Social = () => {
             autoResize: true,
             physics: { stabilization: { enabled: false } },
             layout: {
-                improvedLayout: true,
+                improvedLayout: false,
             },
             edges: {
                 smooth: false,
@@ -102,14 +103,7 @@ export const Social = () => {
                     </div>
                 </Col>
                 <Col span={6} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
-                    <Input
-                        addonBefore="Mentioned"
-                        defaultValue={undefined}
-                        value={mentionedUsername}
-                        allowClear
-                        onChange={(e) => setMentionedUserName(e.target.value)}
-                        size="large"
-                    />
+                    <Input addonBefore="Mentioned" defaultValue={undefined} value={mentionedUsername} allowClear onChange={(e) => setMentionedUserName(e.target.value)} size="large" />
                 </Col>
                 <Col span={3} style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: '0.5em' }}>
                     <InputNumber min={1} max={100000} size="middle" addonBefore={'Limit'} value={limit} onChange={(newVal) => setLimit(newVal)}></InputNumber>

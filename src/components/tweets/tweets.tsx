@@ -8,7 +8,7 @@ import moment from 'moment'
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../hooks/useGetFilteredTweetsHook'
 import { getColumns } from './columns'
-import { useArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from './hooks'
+import { useArrayUrlState, useBoolUrlState, useDateUrlState, useNumberUrlState, useUrlState } from '../hooks/urlState'
 import './../../extensions/string.extensions'
 import { useSearchParams } from 'react-router-dom'
 
