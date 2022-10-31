@@ -17,11 +17,17 @@ export const useUrlState = (paramName: string, defaultValue: DefaultType): [Retu
         value,
         (newValue: ReturnType) => {
             if (newValue) {
-                searchParams.set(paramName, newValue.toString())
-                setSearchParams(searchParams) // Just deleting the search param doesn't trigger a re-render
+                setSearchParams((prevSearchParams) => {
+                    const newSearchParams = new URLSearchParams(prevSearchParams)
+                    newSearchParams.set(paramName, newValue.toString())
+                    return newSearchParams
+                })
             } else {
-                searchParams.delete(paramName)
-                setSearchParams(searchParams) // Just deleting the search param doesn't trigger a re-render
+                setSearchParams((prevSearchParams) => {
+                    const newSearchParams = new URLSearchParams(prevSearchParams)
+                    newSearchParams.delete(paramName)
+                    return newSearchParams
+                })
             }
         },
     ]
@@ -39,7 +45,7 @@ export const useBoolUrlState = (paramName: string, defaultValue: boolean | undef
 }
 
 export const useNumberUrlState = (paramName: string, defaultValue: number | undefined): [number | undefined, (newValue: number | undefined) => void] => {
-    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? 'true' : undefined)
+    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? defaultValue.toString() : undefined)
 
     return [
         Number(strVal),
@@ -49,8 +55,8 @@ export const useNumberUrlState = (paramName: string, defaultValue: number | unde
     ]
 }
 
-export const useArrayUrlState = <T,>(paramName: string, defaultValue: string[] | undefined): [string[] | undefined, (newValue: string[] | undefined) => void] => {
-    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? 'true' : undefined)
+export const useArrayUrlState = (paramName: string, defaultValue: string[] | undefined): [string[] | undefined, (newValue: string[] | undefined) => void] => {
+    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? defaultValue.join(',') : undefined)
 
     return [
         strVal?.toArray(),
@@ -61,7 +67,7 @@ export const useArrayUrlState = <T,>(paramName: string, defaultValue: string[] |
 }
 
 export const useDateUrlState = (paramName: string, defaultValue: Date | undefined): [Date | undefined, (newValue: Date | undefined) => void] => {
-    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? 'true' : undefined)
+    const [strVal, strValSetter] = useUrlState(paramName, defaultValue ? defaultValue.toUTCString() : undefined)
 
     return [
         strVal?.toDate(),
