@@ -93,11 +93,11 @@ export const Tweets = () => {
                         <Space direction="vertical">
                             <Row justify="center">
                                 <Col span={4}>From</Col>
-                                <Col span={18}>
+                                <Col span={19}>
                                     <DatePicker
                                         format="YYYY-MM-DD HH:mm:ss"
                                         size="small"
-                                        value={moment(startingFrom)}
+                                        value={startingFrom ? moment(startingFrom) : undefined}
                                         showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
                                         onChange={(dt, ds) => {
                                             setStartingFrom(dt?.toDate())
@@ -108,12 +108,12 @@ export const Tweets = () => {
                             </Row>
                             <Row justify="center">
                                 <Col span={4}>To</Col>
-                                <Col span={18}>
+                                <Col span={19}>
                                     {' '}
                                     <DatePicker
                                         format="YYYY-MM-DD HH:mm:ss"
                                         size="small"
-                                        value={moment(upTo)}
+                                        value={upTo ? moment(upTo) : undefined}
                                         showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
                                         onChange={(dt, ds) => {
                                             setUpTo(dt?.toDate())

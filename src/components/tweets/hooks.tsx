@@ -39,7 +39,7 @@ export const useBoolUrlState = (paramName: string, defaultValue: boolean | undef
     return [
         strVal?.toBoolean(),
         (newValue: boolean | undefined) => {
-            strValSetter(String(newValue))
+            strValSetter(newValue?.toString())
         },
     ]
 }
