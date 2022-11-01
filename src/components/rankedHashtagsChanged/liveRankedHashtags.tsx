@@ -58,7 +58,6 @@ export const LiveRankedHashtags = () => {
                 value: rh?.rank,
             })) ?? []
         setWordCloudData([...newWords])
-        console.log(new Date().toTimeString())
     }, [rankedHashtagsChanged?.topRankedHashtags])
 
     if (loadingHashtags) {

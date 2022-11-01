@@ -177,11 +177,9 @@ export const Tweets = () => {
                         sortDirections={['descend', 'ascend']}
                         onChange={(pagination, filters, sorter: SorterResult<TweetTypeQl> | SorterResult<TweetTypeQl>[]) => {
                             if ('order' in sorter && sorter.order) {
-                                console.log(sorter.order)
                                 setSortOrder(sorter.order === 'ascend' ? SortOrder.Ascending : SortOrder.Descending)
                             }
                             if ('field' in sorter && sorter.field) {
-                                console.log(sorter.field)
                                 let sortField: SortField = SortField.CreatedAt
                                 switch (sorter.field) {
                                     case 'username': {
