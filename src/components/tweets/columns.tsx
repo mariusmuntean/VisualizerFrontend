@@ -92,11 +92,12 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
                   dataIndex: 'geoLoc',
                   width: '10%',
                   render: (text, record) => {
-                      return record.geoLoc?.latitude && record.geoLoc?.longitude ? (
-                          <a href={getShowTweetsAtLocationUrl([record.geoLoc.latitude, record.geoLoc.longitude])}>{`(${record.geoLoc?.latitude ?? ''}, ${record.geoLoc?.longitude ?? ''})`}</a>
-                      ) : (
-                          <></>
-                      )
+                      if (!record.geoLoc?.latitude || !record.geoLoc?.longitude) {
+                          return <></>
+                      }
+
+                      const destinationUrl = getShowTweetsAtLocationUrl([record.geoLoc.latitude, record.geoLoc.longitude], record.id)
+                      return <a href={destinationUrl}>{`(${record.geoLoc?.latitude ?? ''}, ${record.geoLoc?.longitude ?? ''})`}</a>
                   },
               } as ColumnType<TweetTypeQl>,
           ]

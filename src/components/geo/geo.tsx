@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { LatLngTuple, LeafletMouseEvent, LeafletMouseEventHandlerFn, Map } from 'leaflet'
+import { LatLng, LatLngTuple, LeafletMouseEvent, LeafletMouseEventHandlerFn, Map } from 'leaflet'
 import { Circle, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet'
+import { Marker as LeafletMarker } from 'leaflet'
 import { Tweet } from 'react-twitter-widgets'
 import { Button, Col, Divider, Input, InputNumber, Row, Space, Tooltip } from 'antd'
 import { EnvironmentOutlined } from '@ant-design/icons'
 
 import { GeoLocTypeQl } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../../util/hooks/useGetFilteredTweetsHook'
-import { useNumberArrayUrlState, useNumberUrlState } from '../../util/hooks/urlState'
+import { useNumberArrayUrlState, useNumberUrlState, useUrlState } from '../../util/hooks/urlState'
 
 const CenterMap = ({ center }: { center: LatLngTuple }) => {
     const map = useMap()
@@ -21,9 +22,23 @@ const CircularAreaSelector = ({ clickHandler }: { clickHandler: LeafletMouseEven
     return null
 }
 
-const TweetLocationMarker = ({ tweetId, latitude, longitude }: GeoLocTypeQl & { tweetId: string }) => {
+const TweetLocationMarker = ({
+    tweetId,
+    isInitiallyOpen,
+    onOpen,
+    latitude,
+    longitude,
+}: GeoLocTypeQl & { tweetId: string; isInitiallyOpen: boolean; onOpen: (tweetId: string | undefined) => void }) => {
+    const markerRef = useRef<LeafletMarker<any>>(null)
+
+    useEffect(() => {
+        if (markerRef.current && isInitiallyOpen) {
+            markerRef.current.openPopup()
+        }
+    }, [])
+
     return (
-        <Marker position={{ lat: latitude!, lng: longitude! }}>
+        <Marker position={{ lat: latitude!, lng: longitude! }} ref={markerRef} eventHandlers={{ popupopen: (e) => onOpen(tweetId) }}>
             <Popup maxWidth="auto">
                 <Tweet tweetId={tweetId} />
             </Popup>
@@ -35,6 +50,7 @@ const defaultGeo = [50, 12]
 
 export const GeoLocationQueryParamName = 'geoLocation'
 export const RadiusQueryParamName = 'radiusKm'
+export const OpenTweetIdQueryParamName = 'openTweetId'
 
 export const Geo = () => {
     const mapRef = useRef<Map | undefined>(undefined)
@@ -45,6 +61,8 @@ export const Geo = () => {
 
     const [radiusKm, setRadiusKm] = useNumberUrlState(RadiusQueryParamName, 300)
     const [locating, setLocating] = useState<boolean>(false)
+
+    const [openTweetId, setOpenTweetId] = useUrlState(OpenTweetIdQueryParamName, undefined)
 
     const { data } = useGetFilteredTweetsHook({
         onlyWithGeo: true,
@@ -74,7 +92,7 @@ export const Geo = () => {
     }, [setGeoLocation])
 
     const ch: LeafletMouseEventHandlerFn = (event: LeafletMouseEvent) => {
-        setGeoLocation([event.latlng.lat, event.latlng.lng])
+        setGeoLocation([event.latlng.lat, event.latlng.lng] as LatLngTuple)
     }
 
     const tweetsWithGeo = data?.tweet?.find?.tweets?.filter((t) => t?.geoLoc)
@@ -98,7 +116,17 @@ export const Geo = () => {
                 <div id="map" style={{ width: '100%', height: '100%' }}>
                     <MapContainer ref={mapRef} center={geoLocation} zoom={6} scrollWheelZoom={true} style={{ height: '100vh' }}>
                         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                        {tweetsWithGeo && tweetsWithGeo.map((t) => <TweetLocationMarker key={t?.id} tweetId={t?.id!} latitude={t?.geoLoc?.latitude!} longitude={t?.geoLoc?.longitude!} />)}
+                        {tweetsWithGeo &&
+                            tweetsWithGeo.map((t) => (
+                                <TweetLocationMarker
+                                    key={t?.id}
+                                    tweetId={t?.id!}
+                                    isInitiallyOpen={t?.id === openTweetId}
+                                    onOpen={setOpenTweetId}
+                                    latitude={t?.geoLoc?.latitude}
+                                    longitude={t?.geoLoc?.longitude}
+                                />
+                            ))}
                         <CenterMap center={geoLocation} />
                         <CircularAreaSelector clickHandler={ch} />
                         <Circle center={geoLocation} radius={radiusKm * 1000}></Circle>
