@@ -1,10 +1,9 @@
 import { Space, Tag } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
 
 import { TweetTypeQl } from '../../generated/graphql'
-import { getShowTweetsAtLocationUrl, useShowTweetsAtLocation } from '../../util/useShowTweetsAtLocation'
+import { getShowTweetsAtLocationUrl } from '../../util/useShowTweetsAtLocation'
 
 export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
     {
@@ -35,8 +34,8 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
         render: (text, record) => {
             return (
                 <Space wrap>
-                    {record.entities?.hashtags?.map((hashtag) => (
-                        <Tag key={hashtag}>{hashtag}</Tag>
+                    {record.entities?.hashtags?.map((hashtag, idx) => (
+                        <Tag key={hashtag + `${idx}`}>{hashtag}</Tag>
                     ))}
                 </Space>
             )
