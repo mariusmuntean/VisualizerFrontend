@@ -28,6 +28,14 @@ function App() {
         navigate(newTabName)
     }
 
+    const hashtagsTab = '/hashtags'
+    const rankedHashtagsTab = '/rankedhashtags'
+    const tweetsTab = '/tweets'
+    const socialTab = '/social'
+    const geoTab = '/geo'
+    const defaultTab = hashtagsTab
+    const currentTb = [hashtagsTab, rankedHashtagsTab, tweetsTab, socialTab, geoTab].includes(location.pathname) ? location.pathname : defaultTab
+
     return (
         <>
             <Row style={{ margin: '1em' }}>
@@ -46,20 +54,20 @@ function App() {
             </Row>
             <Row>
                 <Col span={24}>
-                    <Tabs defaultActiveKey="hashtags" activeKey={location.pathname} defaultValue="hashtags" onChange={onTabChange} centered destroyInactiveTabPane={true}>
-                        <TabPane tab="Hashtag Added" key="/hashtags">
+                    <Tabs defaultActiveKey="hashtags" activeKey={currentTb} defaultValue={defaultTab} onChange={onTabChange} centered destroyInactiveTabPane={true}>
+                        <TabPane tab="Hashtag Added" key={hashtagsTab}>
                             <LiveHashtagAdded />
                         </TabPane>
-                        <TabPane tab="Ranked Hashtags" key="/rankedhashtags">
+                        <TabPane tab="Ranked Hashtags" key={rankedHashtagsTab}>
                             <LiveRankedHashtags />
                         </TabPane>
-                        <TabPane tab="Tweets" key="/tweets">
+                        <TabPane tab="Tweets" key={tweetsTab}>
                             <Tweets />
                         </TabPane>
-                        <TabPane tab="Social Graph" key="/social">
+                        <TabPane tab="Social Graph" key={socialTab}>
                             <Social />
                         </TabPane>
-                        <TabPane tab="Geo" key="/geo">
+                        <TabPane tab="Geo" key={geoTab}>
                             <Geo />
                         </TabPane>
                     </Tabs>
