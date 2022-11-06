@@ -70,7 +70,7 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'publicMetrics.retweetCount',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
-        width: '5%',
+        width: '7%',
         render: (text, record) => {
             return record.publicMetricsRetweetCount
         },
@@ -80,7 +80,7 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
         dataIndex: 'publicMetrics.replyCount',
         sorter: true,
         sortDirections: ['descend', 'ascend'],
-        width: '5%',
+        width: '6%',
         render: (text, record) => {
             return record.publicMetricsReplyCount
         },
