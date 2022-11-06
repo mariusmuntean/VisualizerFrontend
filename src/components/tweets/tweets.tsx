@@ -47,7 +47,7 @@ export const Tweets = () => {
         pageSize: pageSize,
         pageNumber: pageNumber ? pageNumber - 1 : undefined,
         sortField: sortField ? (sortField.toString() as SortField) : null,
-        sortOrder: sortOrder ? (sortOrder.toString() as SortOrder) : null,
+        sortOrder: sortOrder ? sortOrder.toSortOrder() : null,
     })
 
     const onCurrentHashtagConfirmed = () => {
@@ -176,35 +176,43 @@ export const Tweets = () => {
                         rowKey="id"
                         sortDirections={['descend', 'ascend']}
                         onChange={(pagination, filters, sorter: SorterResult<TweetTypeQl> | SorterResult<TweetTypeQl>[]) => {
+                            // Updating multiple params at once
+                            let newSortOrder = sortOrder
                             if ('order' in sorter && sorter.order) {
-                                setSortOrder(sorter.order === 'ascend' ? SortOrder.Ascending : SortOrder.Descending)
+                                newSortOrder = sorter.order.toSortOrder() ?? sortOrder
                             }
+
+                            let newSortByField: SortField = SortField.CreatedAt
                             if ('field' in sorter && sorter.field) {
-                                let sortField: SortField = SortField.CreatedAt
                                 switch (sorter.field) {
                                     case 'username': {
-                                        sortField = SortField.Username
+                                        newSortByField = SortField.Username
                                         break
                                     }
                                     case 'createdAt': {
-                                        sortField = SortField.CreatedAt
+                                        newSortByField = SortField.CreatedAt
                                         break
                                     }
                                     case 'publicMetrics.likeCount': {
-                                        sortField = SortField.PublicMetricsLikesCount
+                                        newSortByField = SortField.PublicMetricsLikesCount
                                         break
                                     }
                                     case 'publicMetrics.retweetCount': {
-                                        sortField = SortField.PublicMetricsRetweetsCount
+                                        newSortByField = SortField.PublicMetricsRetweetsCount
                                         break
                                     }
                                     case 'publicMetrics.replyCount': {
-                                        sortField = SortField.PublicMetricsRepliesCount
+                                        newSortByField = SortField.PublicMetricsRepliesCount
                                         break
                                     }
                                 }
-                                setSortField(sortField)
                             }
+
+                            setSearchParams((prev) => {
+                                if (newSortOrder) prev.set('sortOrder', newSortOrder)
+                                if (newSortByField) prev.set('sortField', newSortByField)
+                                return prev
+                            })
                         }}
                         pagination={{
                             pageSize: pageSize ?? 11,

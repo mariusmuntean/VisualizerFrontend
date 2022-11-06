@@ -1,338 +1,375 @@
-import { gql } from '@apollo/client';
-import * as Apollo from '@apollo/client';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {} as const;
+import { gql } from '@apollo/client'
+import * as Apollo from '@apollo/client'
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> }
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> }
+const defaultOptions = {} as const
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  /** The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
-  DateTime: any;
-  Decimal: any;
-  Long: any;
-};
+    ID: string
+    String: string
+    Boolean: boolean
+    Int: number
+    Float: number
+    /** The `DateTime` scalar type represents a date and time. `DateTime` expects timestamps to be formatted in accordance with the [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601) standard. */
+    DateTime: any
+    Decimal: any
+    Long: any
+}
 
 export type CashtagEntityTypeQl = {
-  __typename?: 'CashtagEntityTypeQl';
-  end?: Maybe<Scalars['Int']>;
-  start?: Maybe<Scalars['Int']>;
-  tag?: Maybe<Scalars['String']>;
-};
+    __typename?: 'CashtagEntityTypeQl'
+    end?: Maybe<Scalars['Int']>
+    start?: Maybe<Scalars['Int']>
+    tag?: Maybe<Scalars['String']>
+}
 
 export type FindTweetsInputTypeQl = {
-  authorId?: InputMaybe<Scalars['String']>;
-  geoFilter?: InputMaybe<GeoFilterInputTypeQl>;
-  hashtags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  onlyWithGeo?: InputMaybe<Scalars['Boolean']>;
-  pageNumber?: InputMaybe<Scalars['Int']>;
-  pageSize?: InputMaybe<Scalars['Int']>;
-  searchTerm?: InputMaybe<Scalars['String']>;
-  sortField?: InputMaybe<SortField>;
-  sortOrder?: InputMaybe<SortOrder>;
-  startingFrom?: InputMaybe<Scalars['DateTime']>;
-  tweetId?: InputMaybe<Scalars['String']>;
-  upTo?: InputMaybe<Scalars['DateTime']>;
-  username?: InputMaybe<Scalars['String']>;
-};
+    authorId?: InputMaybe<Scalars['String']>
+    geoFilter?: InputMaybe<GeoFilterInputTypeQl>
+    hashtags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
+    onlyWithGeo?: InputMaybe<Scalars['Boolean']>
+    pageNumber?: InputMaybe<Scalars['Int']>
+    pageSize?: InputMaybe<Scalars['Int']>
+    searchTerm?: InputMaybe<Scalars['String']>
+    sortField?: InputMaybe<SortField>
+    sortOrder?: InputMaybe<SortOrder>
+    startingFrom?: InputMaybe<Scalars['DateTime']>
+    tweetId?: InputMaybe<Scalars['String']>
+    upTo?: InputMaybe<Scalars['DateTime']>
+    username?: InputMaybe<Scalars['String']>
+}
 
 export type GeoFilterInputTypeQl = {
-  latitude?: InputMaybe<Scalars['Float']>;
-  longitude?: InputMaybe<Scalars['Float']>;
-  radiusKm?: InputMaybe<Scalars['Float']>;
-};
+    latitude?: InputMaybe<Scalars['Float']>
+    longitude?: InputMaybe<Scalars['Float']>
+    radiusKm?: InputMaybe<Scalars['Float']>
+}
 
 export type GeoLocTypeQl = {
-  __typename?: 'GeoLocTypeQl';
-  latitude?: Maybe<Scalars['Float']>;
-  longitude?: Maybe<Scalars['Float']>;
-};
+    __typename?: 'GeoLocTypeQl'
+    latitude?: Maybe<Scalars['Float']>
+    longitude?: Maybe<Scalars['Float']>
+}
 
 export type GraphResultQuery = {
-  __typename?: 'GraphResultQuery';
-  graphResults?: Maybe<GraphResultTypeQl>;
-  mentions?: Maybe<GraphResultTypeQl>;
-  userCount?: Maybe<Scalars['Long']>;
-};
-
+    __typename?: 'GraphResultQuery'
+    graphResults?: Maybe<GraphResultTypeQl>
+    mentions?: Maybe<GraphResultTypeQl>
+    userCount?: Maybe<Scalars['Long']>
+}
 
 export type GraphResultQueryGraphResultsArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
-};
-
+    amount?: InputMaybe<Scalars['Int']>
+}
 
 export type GraphResultQueryMentionsArgs = {
-  filter?: MentionFilterInputTypeQl;
-};
+    filter?: MentionFilterInputTypeQl
+}
 
 export type GraphResultStatisticsTypeQl = {
-  __typename?: 'GraphResultStatisticsTypeQl';
-  queryInternalExecutionTime?: Maybe<Scalars['String']>;
-};
+    __typename?: 'GraphResultStatisticsTypeQl'
+    queryInternalExecutionTime?: Maybe<Scalars['String']>
+}
 
 export type GraphResultTypeQl = {
-  __typename?: 'GraphResultTypeQl';
-  edges?: Maybe<Array<Maybe<MentionRelationshipTypeQl>>>;
-  nodes?: Maybe<Array<Maybe<UserNodeTypeQl>>>;
-  statistics?: Maybe<GraphResultStatisticsTypeQl>;
-};
+    __typename?: 'GraphResultTypeQl'
+    edges?: Maybe<Array<Maybe<MentionRelationshipTypeQl>>>
+    nodes?: Maybe<Array<Maybe<UserNodeTypeQl>>>
+    statistics?: Maybe<GraphResultStatisticsTypeQl>
+}
 
 export type MentionFilterInputTypeQl = {
-  amount?: InputMaybe<Scalars['Int']>;
-  authorUserName?: InputMaybe<Scalars['String']>;
-  maxHops?: InputMaybe<Scalars['Int']>;
-  mentionedUserNames?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  minHops?: InputMaybe<Scalars['Int']>;
-};
+    amount?: InputMaybe<Scalars['Int']>
+    authorUserName?: InputMaybe<Scalars['String']>
+    maxHops?: InputMaybe<Scalars['Int']>
+    mentionedUserNames?: InputMaybe<Array<InputMaybe<Scalars['String']>>>
+    minHops?: InputMaybe<Scalars['Int']>
+}
 
 export enum MentionRelationshipType {
-  Mentioned = 'MENTIONED',
-  WasMentionedBy = 'WAS_MENTIONED_BY'
+    Mentioned = 'MENTIONED',
+    WasMentionedBy = 'WAS_MENTIONED_BY',
 }
 
 export type MentionRelationshipTypeQl = {
-  __typename?: 'MentionRelationshipTypeQl';
-  fromUserId: Scalars['String'];
-  relationshipType?: Maybe<MentionRelationshipType>;
-  toUserId: Scalars['String'];
-  tweetId: Scalars['String'];
-};
+    __typename?: 'MentionRelationshipTypeQl'
+    fromUserId: Scalars['String']
+    relationshipType?: Maybe<MentionRelationshipType>
+    toUserId: Scalars['String']
+    tweetId: Scalars['String']
+}
 
 export type RankedHashtagQuery = {
-  __typename?: 'RankedHashtagQuery';
-  /** Retrieve a specified amount of the top ranked hashtags */
-  topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>;
-};
-
+    __typename?: 'RankedHashtagQuery'
+    /** Retrieve a specified amount of the top ranked hashtags */
+    topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>
+}
 
 export type RankedHashtagQueryTopRankedHashtagsArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
-};
+    amount?: InputMaybe<Scalars['Int']>
+}
 
 export type RankedHashtagTypeQl = {
-  __typename?: 'RankedHashtagTypeQl';
-  name?: Maybe<Scalars['String']>;
-  rank?: Maybe<Scalars['Decimal']>;
-};
+    __typename?: 'RankedHashtagTypeQl'
+    name?: Maybe<Scalars['String']>
+    rank?: Maybe<Scalars['Decimal']>
+}
 
 export type ReferencedTweetTypeQl = {
-  __typename?: 'ReferencedTweetTypeQl';
-  id?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
-};
+    __typename?: 'ReferencedTweetTypeQl'
+    id?: Maybe<Scalars['String']>
+    type?: Maybe<Scalars['String']>
+}
 
 export enum SortField {
-  CreatedAt = 'CREATED_AT',
-  PublicMetricsLikesCount = 'PUBLIC_METRICS_LIKES_COUNT',
-  PublicMetricsRepliesCount = 'PUBLIC_METRICS_REPLIES_COUNT',
-  PublicMetricsRetweetsCount = 'PUBLIC_METRICS_RETWEETS_COUNT',
-  Username = 'USERNAME'
+    CreatedAt = 'CREATED_AT',
+    PublicMetricsLikesCount = 'PUBLIC_METRICS_LIKES_COUNT',
+    PublicMetricsRepliesCount = 'PUBLIC_METRICS_REPLIES_COUNT',
+    PublicMetricsRetweetsCount = 'PUBLIC_METRICS_RETWEETS_COUNT',
+    Username = 'USERNAME',
+    fromString = 'fromString',
 }
 
 export enum SortOrder {
-  Ascending = 'ASCENDING',
-  Descending = 'DESCENDING'
+    Ascending = 'ASCENDING',
+    Descending = 'DESCENDING',
 }
 
 export type StreamingMutations = {
-  __typename?: 'StreamingMutations';
-  /** Start ingesting the live Twitter feed */
-  startStreaming?: Maybe<Scalars['Boolean']>;
-  /** Stop ingesting the live Twitter feed */
-  stopStreaming?: Maybe<Scalars['Boolean']>;
-};
+    __typename?: 'StreamingMutations'
+    /** Start ingesting the live Twitter feed */
+    startStreaming?: Maybe<Scalars['Boolean']>
+    /** Stop ingesting the live Twitter feed */
+    stopStreaming?: Maybe<Scalars['Boolean']>
+}
 
 export type StreamingQuery = {
-  __typename?: 'StreamingQuery';
-  /** Whether or not the live ingestion is running. */
-  isStreaming?: Maybe<Scalars['Boolean']>;
-};
+    __typename?: 'StreamingQuery'
+    /** Whether or not the live ingestion is running. */
+    isStreaming?: Maybe<Scalars['Boolean']>
+}
 
 export type StreamingStatusTypeQl = {
-  __typename?: 'StreamingStatusTypeQl';
-  isStreaming?: Maybe<Scalars['Boolean']>;
-};
+    __typename?: 'StreamingStatusTypeQl'
+    isStreaming?: Maybe<Scalars['Boolean']>
+}
 
 export type TweetEntitiesTypeQl = {
-  __typename?: 'TweetEntitiesTypeQl';
-  cashtags?: Maybe<Array<Maybe<CashtagEntityTypeQl>>>;
-  hashtags?: Maybe<Array<Maybe<Scalars['String']>>>;
-  mentions?: Maybe<Array<Maybe<Scalars['String']>>>;
-};
+    __typename?: 'TweetEntitiesTypeQl'
+    cashtags?: Maybe<Array<Maybe<CashtagEntityTypeQl>>>
+    hashtags?: Maybe<Array<Maybe<Scalars['String']>>>
+    mentions?: Maybe<Array<Maybe<Scalars['String']>>>
+}
 
 export type TweetMetricsTypeQl = {
-  __typename?: 'TweetMetricsTypeQl';
-  impressionCount?: Maybe<Scalars['Int']>;
-  likeCount?: Maybe<Scalars['Int']>;
-  replyCount?: Maybe<Scalars['Int']>;
-  retweetCount?: Maybe<Scalars['Int']>;
-  urlLinkClicks?: Maybe<Scalars['Int']>;
-  userProfileClicks?: Maybe<Scalars['Int']>;
-};
+    __typename?: 'TweetMetricsTypeQl'
+    impressionCount?: Maybe<Scalars['Int']>
+    likeCount?: Maybe<Scalars['Int']>
+    replyCount?: Maybe<Scalars['Int']>
+    retweetCount?: Maybe<Scalars['Int']>
+    urlLinkClicks?: Maybe<Scalars['Int']>
+    userProfileClicks?: Maybe<Scalars['Int']>
+}
 
 export type TweetModelsPageTypeQl = {
-  __typename?: 'TweetModelsPageTypeQl';
-  total?: Maybe<Scalars['Int']>;
-  tweets?: Maybe<Array<Maybe<TweetTypeQl>>>;
-};
+    __typename?: 'TweetModelsPageTypeQl'
+    total?: Maybe<Scalars['Int']>
+    tweets?: Maybe<Array<Maybe<TweetTypeQl>>>
+}
 
 export type TweetQuery = {
-  __typename?: 'TweetQuery';
-  find?: Maybe<TweetModelsPageTypeQl>;
-};
-
+    __typename?: 'TweetQuery'
+    find?: Maybe<TweetModelsPageTypeQl>
+}
 
 export type TweetQueryFindArgs = {
-  filter?: InputMaybe<FindTweetsInputTypeQl>;
-};
+    filter?: InputMaybe<FindTweetsInputTypeQl>
+}
 
 export type TweetTypeQl = {
-  __typename?: 'TweetTypeQl';
-  authorId?: Maybe<Scalars['String']>;
-  conversationId?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['DateTime']>;
-  entities?: Maybe<TweetEntitiesTypeQl>;
-  geoLoc?: Maybe<GeoLocTypeQl>;
-  id?: Maybe<Scalars['String']>;
-  lang?: Maybe<Scalars['String']>;
-  organicMetrics?: Maybe<TweetMetricsTypeQl>;
-  publicMetricsLikeCount?: Maybe<Scalars['Int']>;
-  publicMetricsReplyCount?: Maybe<Scalars['Int']>;
-  publicMetricsRetweetCount?: Maybe<Scalars['Int']>;
-  referencedTweets?: Maybe<Array<Maybe<ReferencedTweetTypeQl>>>;
-  source?: Maybe<Scalars['String']>;
-  text?: Maybe<Scalars['String']>;
-  username?: Maybe<Scalars['String']>;
-};
+    __typename?: 'TweetTypeQl'
+    authorId?: Maybe<Scalars['String']>
+    conversationId?: Maybe<Scalars['String']>
+    createdAt?: Maybe<Scalars['DateTime']>
+    entities?: Maybe<TweetEntitiesTypeQl>
+    geoLoc?: Maybe<GeoLocTypeQl>
+    id?: Maybe<Scalars['String']>
+    lang?: Maybe<Scalars['String']>
+    organicMetrics?: Maybe<TweetMetricsTypeQl>
+    publicMetricsLikeCount?: Maybe<Scalars['Int']>
+    publicMetricsReplyCount?: Maybe<Scalars['Int']>
+    publicMetricsRetweetCount?: Maybe<Scalars['Int']>
+    referencedTweets?: Maybe<Array<Maybe<ReferencedTweetTypeQl>>>
+    source?: Maybe<Scalars['String']>
+    text?: Maybe<Scalars['String']>
+    username?: Maybe<Scalars['String']>
+}
 
 export type UserNodeTypeQl = {
-  __typename?: 'UserNodeTypeQl';
-  userId: Scalars['String'];
-  userName?: Maybe<Scalars['String']>;
-};
+    __typename?: 'UserNodeTypeQl'
+    userId: Scalars['String']
+    userName?: Maybe<Scalars['String']>
+}
 
 export type VisualizerMutation = {
-  __typename?: 'VisualizerMutation';
-  streaming?: Maybe<StreamingMutations>;
-};
+    __typename?: 'VisualizerMutation'
+    streaming?: Maybe<StreamingMutations>
+}
 
 export type VisualizerQuery = {
-  __typename?: 'VisualizerQuery';
-  graphResult?: Maybe<GraphResultQuery>;
-  hashtag?: Maybe<RankedHashtagQuery>;
-  streaming?: Maybe<StreamingQuery>;
-  tweet?: Maybe<TweetQuery>;
-};
+    __typename?: 'VisualizerQuery'
+    graphResult?: Maybe<GraphResultQuery>
+    hashtag?: Maybe<RankedHashtagQuery>
+    streaming?: Maybe<StreamingQuery>
+    tweet?: Maybe<TweetQuery>
+}
 
 export type VisualizerSubscription = {
-  __typename?: 'VisualizerSubscription';
-  /** Produces updates whenever the state of the live ingestion has changed */
-  isStreamingChanged?: Maybe<StreamingStatusTypeQl>;
-  /** Hashtags are published with their new rank */
-  rankedHashtag?: Maybe<RankedHashtagTypeQl>;
-  /** Top X ranked hashtags are published whenever they change */
-  topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>;
-};
-
+    __typename?: 'VisualizerSubscription'
+    /** Produces updates whenever the state of the live ingestion has changed */
+    isStreamingChanged?: Maybe<StreamingStatusTypeQl>
+    /** Hashtags are published with their new rank */
+    rankedHashtag?: Maybe<RankedHashtagTypeQl>
+    /** Top X ranked hashtags are published whenever they change */
+    topRankedHashtags?: Maybe<Array<Maybe<RankedHashtagTypeQl>>>
+}
 
 export type VisualizerSubscriptionRankedHashtagArgs = {
-  sampleIntervalSec?: InputMaybe<Scalars['Float']>;
-};
-
+    sampleIntervalSec?: InputMaybe<Scalars['Float']>
+}
 
 export type VisualizerSubscriptionTopRankedHashtagsArgs = {
-  amount?: InputMaybe<Scalars['Int']>;
-};
+    amount?: InputMaybe<Scalars['Int']>
+}
 
 export type GetTopRankedHashtagsQueryVariables = Exact<{
-  amount: Scalars['Int'];
-}>;
+    amount: Scalars['Int']
+}>
 
+export type GetTopRankedHashtagsQuery = {
+    __typename?: 'VisualizerQuery'
+    hashtag?: { __typename?: 'RankedHashtagQuery'; topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl'; rank?: any | null; name?: string | null } | null> | null } | null
+}
 
-export type GetTopRankedHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'RankedHashtagQuery', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', rank?: any | null, name?: string | null } | null> | null } | null };
+export type RankedHashtagSubscriptionVariables = Exact<{ [key: string]: never }>
 
-export type RankedHashtagSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type RankedHashtagSubscription = { __typename?: 'VisualizerSubscription'; rankedHashtag?: { __typename?: 'RankedHashtagTypeQl'; name?: string | null; rank?: any | null } | null }
 
+export type IsStreamingQueryVariables = Exact<{ [key: string]: never }>
 
-export type RankedHashtagSubscription = { __typename?: 'VisualizerSubscription', rankedHashtag?: { __typename?: 'RankedHashtagTypeQl', name?: string | null, rank?: any | null } | null };
-
-export type IsStreamingQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type IsStreamingQuery = { __typename?: 'VisualizerQuery', streaming?: { __typename?: 'StreamingQuery', isStreaming?: boolean | null } | null };
+export type IsStreamingQuery = { __typename?: 'VisualizerQuery'; streaming?: { __typename?: 'StreamingQuery'; isStreaming?: boolean | null } | null }
 
 export type GetFilteredTweetsQueryVariables = Exact<{
-  filter: FindTweetsInputTypeQl;
-}>;
+    filter: FindTweetsInputTypeQl
+}>
 
+export type GetFilteredTweetsQuery = {
+    __typename?: 'VisualizerQuery'
+    tweet?: {
+        __typename?: 'TweetQuery'
+        find?: {
+            __typename?: 'TweetModelsPageTypeQl'
+            total?: number | null
+            tweets?: Array<{
+                __typename?: 'TweetTypeQl'
+                id?: string | null
+                authorId?: string | null
+                username?: string | null
+                conversationId?: string | null
+                lang?: string | null
+                source?: string | null
+                text?: string | null
+                createdAt?: any | null
+                publicMetricsLikeCount?: number | null
+                publicMetricsRetweetCount?: number | null
+                publicMetricsReplyCount?: number | null
+                geoLoc?: { __typename?: 'GeoLocTypeQl'; latitude?: number | null; longitude?: number | null } | null
+                entities?: { __typename?: 'TweetEntitiesTypeQl'; hashtags?: Array<string | null> | null; mentions?: Array<string | null> | null } | null
+            } | null> | null
+        } | null
+    } | null
+}
 
-export type GetFilteredTweetsQuery = { __typename?: 'VisualizerQuery', tweet?: { __typename?: 'TweetQuery', find?: { __typename?: 'TweetModelsPageTypeQl', total?: number | null, tweets?: Array<{ __typename?: 'TweetTypeQl', id?: string | null, authorId?: string | null, username?: string | null, conversationId?: string | null, lang?: string | null, source?: string | null, text?: string | null, createdAt?: any | null, publicMetricsLikeCount?: number | null, publicMetricsRetweetCount?: number | null, publicMetricsReplyCount?: number | null, geoLoc?: { __typename?: 'GeoLocTypeQl', latitude?: number | null, longitude?: number | null } | null, entities?: { __typename?: 'TweetEntitiesTypeQl', hashtags?: Array<string | null> | null, mentions?: Array<string | null> | null } | null } | null> | null } | null } | null };
+export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never }>
 
-export type IsStreamingSubSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription'; isStreamingChanged?: { __typename?: 'StreamingStatusTypeQl'; isStreaming?: boolean | null } | null }
 
+export type StartStreamingMutationVariables = Exact<{ [key: string]: never }>
 
-export type IsStreamingSubSubscription = { __typename?: 'VisualizerSubscription', isStreamingChanged?: { __typename?: 'StreamingStatusTypeQl', isStreaming?: boolean | null } | null };
+export type StartStreamingMutation = { __typename?: 'VisualizerMutation'; streaming?: { __typename?: 'StreamingMutations'; startStreaming?: boolean | null } | null }
 
-export type StartStreamingMutationVariables = Exact<{ [key: string]: never; }>;
+export type StopStreamingMutationVariables = Exact<{ [key: string]: never }>
 
-
-export type StartStreamingMutation = { __typename?: 'VisualizerMutation', streaming?: { __typename?: 'StreamingMutations', startStreaming?: boolean | null } | null };
-
-export type StopStreamingMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type StopStreamingMutation = { __typename?: 'VisualizerMutation', streaming?: { __typename?: 'StreamingMutations', stopStreaming?: boolean | null } | null };
+export type StopStreamingMutation = { __typename?: 'VisualizerMutation'; streaming?: { __typename?: 'StreamingMutations'; stopStreaming?: boolean | null } | null }
 
 export type GetHashtagsQueryVariables = Exact<{
-  amount: Scalars['Int'];
-}>;
+    amount: Scalars['Int']
+}>
 
-
-export type GetHashtagsQuery = { __typename?: 'VisualizerQuery', hashtag?: { __typename?: 'RankedHashtagQuery', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', rank?: any | null, name?: string | null } | null> | null } | null };
+export type GetHashtagsQuery = {
+    __typename?: 'VisualizerQuery'
+    hashtag?: { __typename?: 'RankedHashtagQuery'; topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl'; rank?: any | null; name?: string | null } | null> | null } | null
+}
 
 export type TopRankedHashtagsChangedSubscriptionVariables = Exact<{
-  amount?: InputMaybe<Scalars['Int']>;
-}>;
+    amount?: InputMaybe<Scalars['Int']>
+}>
 
+export type TopRankedHashtagsChangedSubscription = {
+    __typename?: 'VisualizerSubscription'
+    topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl'; name?: string | null; rank?: any | null } | null> | null
+}
 
-export type TopRankedHashtagsChangedSubscription = { __typename?: 'VisualizerSubscription', topRankedHashtags?: Array<{ __typename?: 'RankedHashtagTypeQl', name?: string | null, rank?: any | null } | null> | null };
+export type GetUserCountQueryVariables = Exact<{ [key: string]: never }>
 
-export type GetUserCountQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetUserCountQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', userCount?: any | null } | null };
+export type GetUserCountQuery = { __typename?: 'VisualizerQuery'; graphResult?: { __typename?: 'GraphResultQuery'; userCount?: any | null } | null }
 
 export type GetGraphResultsQueryVariables = Exact<{
-  amount: Scalars['Int'];
-}>;
+    amount: Scalars['Int']
+}>
 
-
-export type GetGraphResultsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', graphResults?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null } | null } | null };
+export type GetGraphResultsQuery = {
+    __typename?: 'VisualizerQuery'
+    graphResult?: {
+        __typename?: 'GraphResultQuery'
+        graphResults?: {
+            __typename?: 'GraphResultTypeQl'
+            nodes?: Array<{ __typename?: 'UserNodeTypeQl'; userId: string; userName?: string | null } | null> | null
+            edges?: Array<{ __typename?: 'MentionRelationshipTypeQl'; fromUserId: string; toUserId: string; tweetId: string; relationshipType?: MentionRelationshipType | null } | null> | null
+        } | null
+    } | null
+}
 
 export type GetMentionsQueryVariables = Exact<{
-  filter: MentionFilterInputTypeQl;
-}>;
+    filter: MentionFilterInputTypeQl
+}>
 
-
-export type GetMentionsQuery = { __typename?: 'VisualizerQuery', graphResult?: { __typename?: 'GraphResultQuery', mentions?: { __typename?: 'GraphResultTypeQl', nodes?: Array<{ __typename?: 'UserNodeTypeQl', userId: string, userName?: string | null } | null> | null, edges?: Array<{ __typename?: 'MentionRelationshipTypeQl', fromUserId: string, toUserId: string, tweetId: string, relationshipType?: MentionRelationshipType | null } | null> | null, statistics?: { __typename?: 'GraphResultStatisticsTypeQl', queryInternalExecutionTime?: string | null } | null } | null } | null };
-
+export type GetMentionsQuery = {
+    __typename?: 'VisualizerQuery'
+    graphResult?: {
+        __typename?: 'GraphResultQuery'
+        mentions?: {
+            __typename?: 'GraphResultTypeQl'
+            nodes?: Array<{ __typename?: 'UserNodeTypeQl'; userId: string; userName?: string | null } | null> | null
+            edges?: Array<{ __typename?: 'MentionRelationshipTypeQl'; fromUserId: string; toUserId: string; tweetId: string; relationshipType?: MentionRelationshipType | null } | null> | null
+            statistics?: { __typename?: 'GraphResultStatisticsTypeQl'; queryInternalExecutionTime?: string | null } | null
+        } | null
+    } | null
+}
 
 export const GetTopRankedHashtagsDocument = gql`
     query getTopRankedHashtags($amount: Int!) {
-  hashtag {
-    topRankedHashtags(amount: $amount) {
-      rank
-      name
+        hashtag {
+            topRankedHashtags(amount: $amount) {
+                rank
+                name
+            }
+        }
     }
-  }
-}
-    `;
+`
 
 /**
  * __useGetTopRankedHashtagsQuery__
@@ -351,24 +388,24 @@ export const GetTopRankedHashtagsDocument = gql`
  * });
  */
 export function useGetTopRankedHashtagsQuery(baseOptions: Apollo.QueryHookOptions<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options)
+}
 export function useGetTopRankedHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options);
-        }
-export type GetTopRankedHashtagsQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsQuery>;
-export type GetTopRankedHashtagsLazyQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsLazyQuery>;
-export type GetTopRankedHashtagsQueryResult = Apollo.QueryResult<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>(GetTopRankedHashtagsDocument, options)
+}
+export type GetTopRankedHashtagsQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsQuery>
+export type GetTopRankedHashtagsLazyQueryHookResult = ReturnType<typeof useGetTopRankedHashtagsLazyQuery>
+export type GetTopRankedHashtagsQueryResult = Apollo.QueryResult<GetTopRankedHashtagsQuery, GetTopRankedHashtagsQueryVariables>
 export const RankedHashtagDocument = gql`
     subscription rankedHashtag {
-  rankedHashtag {
-    name
-    rank
-  }
-}
-    `;
+        rankedHashtag {
+            name
+            rank
+        }
+    }
+`
 
 /**
  * __useRankedHashtagSubscription__
@@ -386,18 +423,18 @@ export const RankedHashtagDocument = gql`
  * });
  */
 export function useRankedHashtagSubscription(baseOptions?: Apollo.SubscriptionHookOptions<RankedHashtagSubscription, RankedHashtagSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<RankedHashtagSubscription, RankedHashtagSubscriptionVariables>(RankedHashtagDocument, options);
-      }
-export type RankedHashtagSubscriptionHookResult = ReturnType<typeof useRankedHashtagSubscription>;
-export type RankedHashtagSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagSubscription>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useSubscription<RankedHashtagSubscription, RankedHashtagSubscriptionVariables>(RankedHashtagDocument, options)
+}
+export type RankedHashtagSubscriptionHookResult = ReturnType<typeof useRankedHashtagSubscription>
+export type RankedHashtagSubscriptionResult = Apollo.SubscriptionResult<RankedHashtagSubscription>
 export const IsStreamingDocument = gql`
     query isStreaming {
-  streaming {
-    isStreaming
-  }
-}
-    `;
+        streaming {
+            isStreaming
+        }
+    }
+`
 
 /**
  * __useIsStreamingQuery__
@@ -415,46 +452,46 @@ export const IsStreamingDocument = gql`
  * });
  */
 export function useIsStreamingQuery(baseOptions?: Apollo.QueryHookOptions<IsStreamingQuery, IsStreamingQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options)
+}
 export function useIsStreamingLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsStreamingQuery, IsStreamingQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options);
-        }
-export type IsStreamingQueryHookResult = ReturnType<typeof useIsStreamingQuery>;
-export type IsStreamingLazyQueryHookResult = ReturnType<typeof useIsStreamingLazyQuery>;
-export type IsStreamingQueryResult = Apollo.QueryResult<IsStreamingQuery, IsStreamingQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<IsStreamingQuery, IsStreamingQueryVariables>(IsStreamingDocument, options)
+}
+export type IsStreamingQueryHookResult = ReturnType<typeof useIsStreamingQuery>
+export type IsStreamingLazyQueryHookResult = ReturnType<typeof useIsStreamingLazyQuery>
+export type IsStreamingQueryResult = Apollo.QueryResult<IsStreamingQuery, IsStreamingQueryVariables>
 export const GetFilteredTweetsDocument = gql`
     query getFilteredTweets($filter: FindTweetsInputTypeQl!) {
-  tweet {
-    find(filter: $filter) {
-      total
-      tweets {
-        id
-        authorId
-        username
-        conversationId
-        lang
-        source
-        text
-        createdAt
-        geoLoc {
-          latitude
-          longitude
+        tweet {
+            find(filter: $filter) {
+                total
+                tweets {
+                    id
+                    authorId
+                    username
+                    conversationId
+                    lang
+                    source
+                    text
+                    createdAt
+                    geoLoc {
+                        latitude
+                        longitude
+                    }
+                    entities {
+                        hashtags
+                        mentions
+                    }
+                    publicMetricsLikeCount
+                    publicMetricsRetweetCount
+                    publicMetricsReplyCount
+                }
+            }
         }
-        entities {
-          hashtags
-          mentions
-        }
-        publicMetricsLikeCount
-        publicMetricsRetweetCount
-        publicMetricsReplyCount
-      }
     }
-  }
-}
-    `;
+`
 
 /**
  * __useGetFilteredTweetsQuery__
@@ -473,23 +510,23 @@ export const GetFilteredTweetsDocument = gql`
  * });
  */
 export function useGetFilteredTweetsQuery(baseOptions: Apollo.QueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options)
+}
 export function useGetFilteredTweetsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options);
-        }
-export type GetFilteredTweetsQueryHookResult = ReturnType<typeof useGetFilteredTweetsQuery>;
-export type GetFilteredTweetsLazyQueryHookResult = ReturnType<typeof useGetFilteredTweetsLazyQuery>;
-export type GetFilteredTweetsQueryResult = Apollo.QueryResult<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>(GetFilteredTweetsDocument, options)
+}
+export type GetFilteredTweetsQueryHookResult = ReturnType<typeof useGetFilteredTweetsQuery>
+export type GetFilteredTweetsLazyQueryHookResult = ReturnType<typeof useGetFilteredTweetsLazyQuery>
+export type GetFilteredTweetsQueryResult = Apollo.QueryResult<GetFilteredTweetsQuery, GetFilteredTweetsQueryVariables>
 export const IsStreamingSubDocument = gql`
     subscription isStreamingSub {
-  isStreamingChanged {
-    isStreaming
-  }
-}
-    `;
+        isStreamingChanged {
+            isStreaming
+        }
+    }
+`
 
 /**
  * __useIsStreamingSubSubscription__
@@ -507,19 +544,19 @@ export const IsStreamingSubDocument = gql`
  * });
  */
 export function useIsStreamingSubSubscription(baseOptions?: Apollo.SubscriptionHookOptions<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>(IsStreamingSubDocument, options);
-      }
-export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>;
-export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useSubscription<IsStreamingSubSubscription, IsStreamingSubSubscriptionVariables>(IsStreamingSubDocument, options)
+}
+export type IsStreamingSubSubscriptionHookResult = ReturnType<typeof useIsStreamingSubSubscription>
+export type IsStreamingSubSubscriptionResult = Apollo.SubscriptionResult<IsStreamingSubSubscription>
 export const StartStreamingDocument = gql`
     mutation startStreaming {
-  streaming {
-    startStreaming
-  }
-}
-    `;
-export type StartStreamingMutationFn = Apollo.MutationFunction<StartStreamingMutation, StartStreamingMutationVariables>;
+        streaming {
+            startStreaming
+        }
+    }
+`
+export type StartStreamingMutationFn = Apollo.MutationFunction<StartStreamingMutation, StartStreamingMutationVariables>
 
 /**
  * __useStartStreamingMutation__
@@ -538,20 +575,20 @@ export type StartStreamingMutationFn = Apollo.MutationFunction<StartStreamingMut
  * });
  */
 export function useStartStreamingMutation(baseOptions?: Apollo.MutationHookOptions<StartStreamingMutation, StartStreamingMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<StartStreamingMutation, StartStreamingMutationVariables>(StartStreamingDocument, options);
-      }
-export type StartStreamingMutationHookResult = ReturnType<typeof useStartStreamingMutation>;
-export type StartStreamingMutationResult = Apollo.MutationResult<StartStreamingMutation>;
-export type StartStreamingMutationOptions = Apollo.BaseMutationOptions<StartStreamingMutation, StartStreamingMutationVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useMutation<StartStreamingMutation, StartStreamingMutationVariables>(StartStreamingDocument, options)
+}
+export type StartStreamingMutationHookResult = ReturnType<typeof useStartStreamingMutation>
+export type StartStreamingMutationResult = Apollo.MutationResult<StartStreamingMutation>
+export type StartStreamingMutationOptions = Apollo.BaseMutationOptions<StartStreamingMutation, StartStreamingMutationVariables>
 export const StopStreamingDocument = gql`
     mutation stopStreaming {
-  streaming {
-    stopStreaming
-  }
-}
-    `;
-export type StopStreamingMutationFn = Apollo.MutationFunction<StopStreamingMutation, StopStreamingMutationVariables>;
+        streaming {
+            stopStreaming
+        }
+    }
+`
+export type StopStreamingMutationFn = Apollo.MutationFunction<StopStreamingMutation, StopStreamingMutationVariables>
 
 /**
  * __useStopStreamingMutation__
@@ -570,22 +607,22 @@ export type StopStreamingMutationFn = Apollo.MutationFunction<StopStreamingMutat
  * });
  */
 export function useStopStreamingMutation(baseOptions?: Apollo.MutationHookOptions<StopStreamingMutation, StopStreamingMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<StopStreamingMutation, StopStreamingMutationVariables>(StopStreamingDocument, options);
-      }
-export type StopStreamingMutationHookResult = ReturnType<typeof useStopStreamingMutation>;
-export type StopStreamingMutationResult = Apollo.MutationResult<StopStreamingMutation>;
-export type StopStreamingMutationOptions = Apollo.BaseMutationOptions<StopStreamingMutation, StopStreamingMutationVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useMutation<StopStreamingMutation, StopStreamingMutationVariables>(StopStreamingDocument, options)
+}
+export type StopStreamingMutationHookResult = ReturnType<typeof useStopStreamingMutation>
+export type StopStreamingMutationResult = Apollo.MutationResult<StopStreamingMutation>
+export type StopStreamingMutationOptions = Apollo.BaseMutationOptions<StopStreamingMutation, StopStreamingMutationVariables>
 export const GetHashtagsDocument = gql`
     query getHashtags($amount: Int!) {
-  hashtag {
-    topRankedHashtags(amount: $amount) {
-      rank
-      name
+        hashtag {
+            topRankedHashtags(amount: $amount) {
+                rank
+                name
+            }
+        }
     }
-  }
-}
-    `;
+`
 
 /**
  * __useGetHashtagsQuery__
@@ -604,24 +641,24 @@ export const GetHashtagsDocument = gql`
  * });
  */
 export function useGetHashtagsQuery(baseOptions: Apollo.QueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options)
+}
 export function useGetHashtagsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHashtagsQuery, GetHashtagsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options);
-        }
-export type GetHashtagsQueryHookResult = ReturnType<typeof useGetHashtagsQuery>;
-export type GetHashtagsLazyQueryHookResult = ReturnType<typeof useGetHashtagsLazyQuery>;
-export type GetHashtagsQueryResult = Apollo.QueryResult<GetHashtagsQuery, GetHashtagsQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetHashtagsQuery, GetHashtagsQueryVariables>(GetHashtagsDocument, options)
+}
+export type GetHashtagsQueryHookResult = ReturnType<typeof useGetHashtagsQuery>
+export type GetHashtagsLazyQueryHookResult = ReturnType<typeof useGetHashtagsLazyQuery>
+export type GetHashtagsQueryResult = Apollo.QueryResult<GetHashtagsQuery, GetHashtagsQueryVariables>
 export const TopRankedHashtagsChangedDocument = gql`
     subscription topRankedHashtagsChanged($amount: Int) {
-  topRankedHashtags(amount: $amount) {
-    name
-    rank
-  }
-}
-    `;
+        topRankedHashtags(amount: $amount) {
+            name
+            rank
+        }
+    }
+`
 
 /**
  * __useTopRankedHashtagsChangedSubscription__
@@ -640,18 +677,18 @@ export const TopRankedHashtagsChangedDocument = gql`
  * });
  */
 export function useTopRankedHashtagsChangedSubscription(baseOptions?: Apollo.SubscriptionHookOptions<TopRankedHashtagsChangedSubscription, TopRankedHashtagsChangedSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<TopRankedHashtagsChangedSubscription, TopRankedHashtagsChangedSubscriptionVariables>(TopRankedHashtagsChangedDocument, options);
-      }
-export type TopRankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useTopRankedHashtagsChangedSubscription>;
-export type TopRankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<TopRankedHashtagsChangedSubscription>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useSubscription<TopRankedHashtagsChangedSubscription, TopRankedHashtagsChangedSubscriptionVariables>(TopRankedHashtagsChangedDocument, options)
+}
+export type TopRankedHashtagsChangedSubscriptionHookResult = ReturnType<typeof useTopRankedHashtagsChangedSubscription>
+export type TopRankedHashtagsChangedSubscriptionResult = Apollo.SubscriptionResult<TopRankedHashtagsChangedSubscription>
 export const GetUserCountDocument = gql`
     query getUserCount {
-  graphResult {
-    userCount
-  }
-}
-    `;
+        graphResult {
+            userCount
+        }
+    }
+`
 
 /**
  * __useGetUserCountQuery__
@@ -669,34 +706,34 @@ export const GetUserCountDocument = gql`
  * });
  */
 export function useGetUserCountQuery(baseOptions?: Apollo.QueryHookOptions<GetUserCountQuery, GetUserCountQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options)
+}
 export function useGetUserCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserCountQuery, GetUserCountQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options);
-        }
-export type GetUserCountQueryHookResult = ReturnType<typeof useGetUserCountQuery>;
-export type GetUserCountLazyQueryHookResult = ReturnType<typeof useGetUserCountLazyQuery>;
-export type GetUserCountQueryResult = Apollo.QueryResult<GetUserCountQuery, GetUserCountQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetUserCountQuery, GetUserCountQueryVariables>(GetUserCountDocument, options)
+}
+export type GetUserCountQueryHookResult = ReturnType<typeof useGetUserCountQuery>
+export type GetUserCountLazyQueryHookResult = ReturnType<typeof useGetUserCountLazyQuery>
+export type GetUserCountQueryResult = Apollo.QueryResult<GetUserCountQuery, GetUserCountQueryVariables>
 export const GetGraphResultsDocument = gql`
     query getGraphResults($amount: Int!) {
-  graphResult {
-    graphResults(amount: $amount) {
-      nodes {
-        userId
-        userName
-      }
-      edges {
-        fromUserId
-        toUserId
-        tweetId
-        relationshipType
-      }
+        graphResult {
+            graphResults(amount: $amount) {
+                nodes {
+                    userId
+                    userName
+                }
+                edges {
+                    fromUserId
+                    toUserId
+                    tweetId
+                    relationshipType
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`
 
 /**
  * __useGetGraphResultsQuery__
@@ -715,37 +752,37 @@ export const GetGraphResultsDocument = gql`
  * });
  */
 export function useGetGraphResultsQuery(baseOptions: Apollo.QueryHookOptions<GetGraphResultsQuery, GetGraphResultsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options)
+}
 export function useGetGraphResultsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGraphResultsQuery, GetGraphResultsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options);
-        }
-export type GetGraphResultsQueryHookResult = ReturnType<typeof useGetGraphResultsQuery>;
-export type GetGraphResultsLazyQueryHookResult = ReturnType<typeof useGetGraphResultsLazyQuery>;
-export type GetGraphResultsQueryResult = Apollo.QueryResult<GetGraphResultsQuery, GetGraphResultsQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetGraphResultsQuery, GetGraphResultsQueryVariables>(GetGraphResultsDocument, options)
+}
+export type GetGraphResultsQueryHookResult = ReturnType<typeof useGetGraphResultsQuery>
+export type GetGraphResultsLazyQueryHookResult = ReturnType<typeof useGetGraphResultsLazyQuery>
+export type GetGraphResultsQueryResult = Apollo.QueryResult<GetGraphResultsQuery, GetGraphResultsQueryVariables>
 export const GetMentionsDocument = gql`
     query getMentions($filter: MentionFilterInputTypeQl!) {
-  graphResult {
-    mentions(filter: $filter) {
-      nodes {
-        userId
-        userName
-      }
-      edges {
-        fromUserId
-        toUserId
-        tweetId
-        relationshipType
-      }
-      statistics {
-        queryInternalExecutionTime
-      }
+        graphResult {
+            mentions(filter: $filter) {
+                nodes {
+                    userId
+                    userName
+                }
+                edges {
+                    fromUserId
+                    toUserId
+                    tweetId
+                    relationshipType
+                }
+                statistics {
+                    queryInternalExecutionTime
+                }
+            }
+        }
     }
-  }
-}
-    `;
+`
 
 /**
  * __useGetMentionsQuery__
@@ -764,13 +801,13 @@ export const GetMentionsDocument = gql`
  * });
  */
 export function useGetMentionsQuery(baseOptions: Apollo.QueryHookOptions<GetMentionsQuery, GetMentionsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options);
-      }
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options)
+}
 export function useGetMentionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMentionsQuery, GetMentionsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options);
-        }
-export type GetMentionsQueryHookResult = ReturnType<typeof useGetMentionsQuery>;
-export type GetMentionsLazyQueryHookResult = ReturnType<typeof useGetMentionsLazyQuery>;
-export type GetMentionsQueryResult = Apollo.QueryResult<GetMentionsQuery, GetMentionsQueryVariables>;
+    const options = { ...defaultOptions, ...baseOptions }
+    return Apollo.useLazyQuery<GetMentionsQuery, GetMentionsQueryVariables>(GetMentionsDocument, options)
+}
+export type GetMentionsQueryHookResult = ReturnType<typeof useGetMentionsQuery>
+export type GetMentionsLazyQueryHookResult = ReturnType<typeof useGetMentionsLazyQuery>
+export type GetMentionsQueryResult = Apollo.QueryResult<GetMentionsQuery, GetMentionsQueryVariables>

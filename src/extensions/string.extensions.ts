@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { SortOrder } from '../generated/graphql'
 
 declare global {
     interface String {
@@ -6,6 +7,7 @@ declare global {
         toBoolean: () => boolean
         toArray: (separator?: string) => Array<string>
         toDate: () => Date
+        toSortOrder: () => SortOrder | null
     }
 }
 
@@ -20,6 +22,21 @@ String.prototype.toArray = function (separator: string = ',') {
 }
 String.prototype.toDate = function () {
     return moment(this as string).toDate()
+}
+String.prototype.toSortOrder = function (): SortOrder | null {
+    if (!this) {
+        return null
+    }
+
+    if (this.toLowerCase().startsWith('asc')) {
+        return SortOrder.Ascending
+    }
+
+    if (this.toLowerCase().startsWith('desc')) {
+        return SortOrder.Descending
+    }
+
+    return null
 }
 
 export {}
