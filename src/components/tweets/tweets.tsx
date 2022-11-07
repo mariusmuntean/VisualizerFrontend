@@ -221,8 +221,11 @@ export const Tweets = () => {
                             total: data?.tweet?.find?.total ?? 0,
                             showTotal: (total) => `${data?.tweet?.find?.total} tweets`,
                             onChange: (pageNumber, pageSize) => {
-                                setPageSize(pageSize)
-                                setPageNumber(pageNumber)
+                                setSearchParams((prev) => {
+                                    prev.set('pageSize', pageSize.toString())
+                                    prev.set('pageNumber', pageNumber.toString())
+                                    return prev
+                                })
                             },
                         }}
                     ></Table>
