@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { SortOrder } from '../generated/graphql'
 
 declare global {
@@ -21,7 +21,7 @@ String.prototype.toArray = function (separator: string = ',') {
     return (this as unknown as string).split(separator)
 }
 String.prototype.toDate = function () {
-    return moment(this as string).toDate()
+    return dayjs(this as string).toDate()
 }
 String.prototype.toSortOrder = function (): SortOrder | null {
     if (!this) {

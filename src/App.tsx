@@ -1,6 +1,5 @@
 import { Button, Col, Row, Tabs } from 'antd'
 import { DownloadOutlined, StopOutlined } from '@ant-design/icons'
-import 'antd/dist/antd.css'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 

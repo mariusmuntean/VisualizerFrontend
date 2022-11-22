@@ -3,7 +3,7 @@ import { BorderlessTableOutlined, PlusOutlined } from '@ant-design/icons'
 import { Row, Col, Input, DatePicker, Tag, Space, Table, Checkbox, Switch, Divider } from 'antd'
 import { ColumnType } from 'antd/lib/table'
 import { SorterResult } from 'antd/lib/table/interface'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { SortField, SortOrder, TweetTypeQl } from '../../generated/graphql'
 import { useGetFilteredTweetsHook } from '../../util/hooks/useGetFilteredTweetsHook'
@@ -97,8 +97,8 @@ export const Tweets = () => {
                                     <DatePicker
                                         format="YYYY-MM-DD HH:mm:ss"
                                         size="small"
-                                        value={startingFrom ? moment(startingFrom) : undefined}
-                                        showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                                        value={startingFrom ? dayjs(startingFrom) : undefined}
+                                        showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
                                         onChange={(dt, ds) => {
                                             setStartingFrom(dt?.toDate())
                                         }}
@@ -113,8 +113,8 @@ export const Tweets = () => {
                                     <DatePicker
                                         format="YYYY-MM-DD HH:mm:ss"
                                         size="small"
-                                        value={upTo ? moment(upTo) : undefined}
-                                        showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                                        value={upTo ? dayjs(upTo) : undefined}
+                                        showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
                                         onChange={(dt, ds) => {
                                             setUpTo(dt?.toDate())
                                         }}

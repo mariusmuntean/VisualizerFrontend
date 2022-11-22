@@ -1,6 +1,6 @@
 import { Space, Tag } from 'antd'
 import { ColumnType } from 'antd/lib/table'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { TweetTypeQl } from '../../generated/graphql'
 import { getShowTweetsAtLocationUrl } from '../../util/useShowTweetsAtLocation'
@@ -109,6 +109,6 @@ export const getColumns = (includeGeo: boolean): ColumnType<TweetTypeQl>[] => [
         sorter: true,
         width: '10%',
         ellipsis: true,
-        render: (text, record) => <div style={{ wordBreak: 'normal' }}>{moment(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>,
+        render: (text, record) => <div style={{ wordBreak: 'normal' }}>{dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>,
     },
 ]
